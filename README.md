@@ -133,3 +133,4 @@ sequenceDiagram
    - `DEBUG`: `False`
    - `SECRET_KEY`: (Generate secure key)
    - `DATABASE_URL`: Add target PostgreSQL connection string for production.
+"# v-restaurant" 
