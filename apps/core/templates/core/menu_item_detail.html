@@ -1,0 +1,165 @@
+{% load static %}
+<div class="col-md-6">
+    <div class="rounded-4 overflow-hidden position-relative mb-3" style="height: 320px;">
+        <img src="{{ item.get_image_url }}" class="w-100 h-100 object-fit-cover" alt="{{ item.name }}">
+        
+        <!-- Favorites Heart Button -->
+        <button class="btn btn-icon glass-btn position-absolute top-0 end-0 m-3 z-3 favorite-toggle-btn {% if is_favorite %}active text-danger{% else %}text-white{% endif %}" 
+                onclick="toggleFavorite('{{ item.id }}', this)">
+            <i class="bi {% if is_favorite %}bi-heart-fill{% else %}bi-heart{% endif %} fs-4"></i>
+        </button>
+    </div>
+    
+    <!-- Dietary & Origin Badges -->
+    <div class="d-flex gap-2 mb-3">
+        {% if item.is_veg %}
+        <span class="badge bg-success-dim text-success border border-success-dim px-2 py-1 small d-flex align-items-center gap-1">
+            <i class="bi bi-circle-fill" style="font-size: 0.5rem;"></i> VEG
+        </span>
+        {% else %}
+        <span class="badge bg-danger-dim text-danger border border-danger-dim px-2 py-1 small d-flex align-items-center gap-1">
+            <i class="bi bi-circle-fill" style="font-size: 0.5rem;"></i> NON-VEG
+        </span>
+        {% endif %}
+        
+        {% if item.is_spicy %}
+        <span class="badge bg-warning-dim text-warning border border-warning-dim px-2 py-1 small d-flex align-items-center gap-1">
+            <i class="bi bi-fire"></i> SPICY
+        </span>
+        {% endif %}
+        
+        <span class="badge bg-dark-dim text-warning border border-white-10 px-2 py-1 small d-flex align-items-center gap-1">
+            <i class="bi bi-star-fill text-warning"></i> {{ item.rating }}
+        </span>
+    </div>
+
+    <!-- Origin & Specs info table -->
+    <div class="origin-spec-info mb-4 p-3 rounded bg-slate-950-50 border border-white-5" style="font-size: 0.8rem;">
+        <div class="d-flex justify-content-between mb-1">
+            <span class="text-secondary">Origin Regionality:</span>
+            <strong class="text-light">{{ item.origin }}</strong>
+        </div>
+        <div class="d-flex justify-content-between mb-1">
+            <span class="text-secondary">District Specialty:</span>
+            <strong class="text-light">{{ item.district }}</strong>
+        </div>
+        <div class="d-flex justify-content-between mb-1">
+            <span class="text-secondary">Preparation Time:</span>
+            <strong class="text-light">{{ item.preparation_time }} mins</strong>
+        </div>
+        <div class="d-flex justify-content-between mb-1">
+            <span class="text-secondary">Calorie Count:</span>
+            <strong class="text-light">{{ item.calories }} kcal</strong>
+        </div>
+        <div class="d-flex justify-content-between">
+            <span class="text-secondary">Spice Level:</span>
+            <strong class="text-light">{{ item.spice_level }}</strong>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-6 d-flex flex-column justify-content-between text-start" style="max-height: 480px; overflow-y: auto;">
+    <div>
+        <h3 class="text-white font-playfair mb-2">{{ item.name }}</h3>
+        <p class="text-secondary small mb-4">{{ item.description }}</p>
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="text-primary mb-0 fw-bold">₹{{ item.price }}</h4>
+            {% if item.is_available %}
+            <button class="btn btn-primary py-2 px-4 rounded-pill fw-bold hover-scale" 
+                    onclick="cart.add('{{ item.id }}', '{{ item.name }}', {{ item.price }}, '{{ item.get_image_url }}', {{ item.is_veg|lower }}); bootstrap.Modal.getInstance(document.getElementById('quickViewModal')).hide();">
+                Add to Gourmet Bag
+            </button>
+            {% else %}
+            <span class="badge bg-secondary border border-secondary px-3 py-2 text-uppercase">Sold Out</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div class="border-top border-white-10 pt-3">
+        <h6 class="text-white mb-3"><i class="bi bi-chat-left-text-fill text-primary me-2"></i>Reviews ({{ item.reviews.count }})</h6>
+        
+        <div class="reviews-list overflow-y-auto mb-3 pe-2" style="max-height: 150px;">
+            {% for review in item.reviews.all %}
+            <div class="mb-3 pb-2 border-bottom border-white-5">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="fw-semibold text-white small">{{ review.customer_name }}</span>
+                    <span class="text-warning small" style="font-size: 0.7rem;">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= review.rating %}
+                            <i class="bi bi-star-fill"></i>
+                            {% else %}
+                            <i class="bi bi-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </span>
+                </div>
+                <p class="text-secondary mb-0 small" style="font-size: 0.75rem;">{{ review.comment }}</p>
+            </div>
+            {% empty %}
+            <p class="text-secondary small py-2">No reviews for this dish yet. Be the first to review!</p>
+            {% endfor %}
+        </div>
+
+        <!-- Add Review Form -->
+        {% if request.user.is_authenticated %}
+        <form id="review-form" onsubmit="submitReview(event, '{{ item.id }}')" class="glass-card p-3 border border-white-10 rounded-3">
+            <h7 class="text-white d-block mb-2 small fw-semibold">Write a Review</h7>
+            <div class="mb-2 d-flex align-items-center gap-2">
+                <span class="text-secondary small">Rating:</span>
+                <select name="rating" id="review-rating" class="form-select form-select-sm bg-dark border-secondary text-white-50 w-auto" required>
+                    <option value="5">5 Stars</option>
+                    <option value="4">4 Stars</option>
+                    <option value="3">3 Stars</option>
+                    <option value="2">2 Stars</option>
+                    <option value="1">1 Star</option>
+                </select>
+            </div>
+            <div class="input-group glass-input-group input-group-sm mb-2">
+                <input type="text" name="comment" id="review-comment" class="form-control bg-transparent border-0 text-white placeholder-secondary" placeholder="Write your comment..." required>
+                <button class="btn btn-outline-primary px-3 text-uppercase fw-semibold" type="submit">Submit</button>
+            </div>
+        </form>
+        {% else %}
+        <div class="alert alert-secondary bg-transparent border-white-5 text-secondary text-center small py-2 rounded">
+            Please <a href="{% url 'core:login' %}" class="text-primary text-hover-underline fw-semibold">Login</a> to write a review.
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- AI Recommendation Sections -->
+<div class="col-12 mt-4 pt-3 border-top border-white-10 text-start">
+    <h5 class="text-white font-playfair mb-3"><i class="bi bi-magic text-primary me-2"></i>You Might Also Like (Similar Dishes)</h5>
+    <div class="row g-2">
+        {% for sim in similar_dishes %}
+        <div class="col-6 col-md-3">
+            <div class="card bg-slate-950 border border-white-5 p-2 rounded-3 text-center" style="cursor: pointer;" onclick="quickView('{{ sim.id }}')">
+                <img src="{{ sim.get_image_url }}" alt="{{ sim.name }}" class="w-100 rounded object-fit-cover mb-2" style="height: 80px;">
+                <h6 class="text-white small d-block text-truncate mb-1">{{ sim.name }}</h6>
+                <span class="text-primary small">₹{{ sim.price }}</span>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-secondary small">No similar dishes found.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="col-12 mt-4 text-start">
+    <h5 class="text-white font-playfair mb-3"><i class="bi bi-basket2 text-primary me-2"></i>Frequently Ordered Together</h5>
+    <div class="row g-2">
+        {% for freq in frequent_dishes %}
+        <div class="col-6 col-md-3">
+            <div class="card bg-slate-950 border border-white-5 p-2 rounded-3 text-center" style="cursor: pointer;" onclick="quickView('{{ freq.id }}')">
+                <img src="{{ freq.get_image_url }}" alt="{{ freq.name }}" class="w-100 rounded object-fit-cover mb-2" style="height: 80px;">
+                <h6 class="text-white small d-block text-truncate mb-1">{{ freq.name }}</h6>
+                <span class="text-primary small">₹{{ freq.price }}</span>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-secondary small">No recommendations found.</p>
+        {% endfor %}
+    </div>
+</div>

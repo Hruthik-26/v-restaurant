@@ -1,0 +1,301 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaaS Analytics | V Restaurant</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Premium Style overrides -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="bg-slate-950 text-light overflow-x-hidden">
+
+    <!-- Top Navigation Bar -->
+    <nav class="navbar navbar-dark bg-slate-900 border-bottom border-white-10 py-3 sticky-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'core:home' %}">
+                <i class="bi bi-chevron-left me-2 text-primary fs-5"></i>
+                <span class="fs-4 fw-bold text-uppercase tracking-widest text-gradient">V Restaurant</span>
+                <span class="badge bg-primary ms-2" style="font-size: 0.65rem;">ADMIN PANEL</span>
+            </a>
+            <div class="d-flex align-items-center gap-3">
+                <span class="text-secondary small d-none d-md-inline">Logged in as <strong class="text-white">{{ request.user.username }}</strong></span>
+                <a href="{% url 'dashboard:menu_list' %}" class="btn btn-outline-primary btn-sm px-3 rounded-pill">Manage Menu</a>
+                <a href="{% url 'dashboard:export_orders' %}" class="btn btn-primary btn-sm px-3 rounded-pill"><i class="bi bi-file-earmark-spreadsheet me-1"></i> Export CSV</a>
+                <form action="{% url 'dashboard:logout' %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm px-3 rounded-pill"><i class="bi bi-box-arrow-right me-1"></i> Logout</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid px-4 py-4">
+        <!-- Management Navigation Hub -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="glass-panel p-3 rounded-4 border border-white-10 d-flex flex-wrap gap-2 justify-content-center align-items-center">
+                    <a href="{% url 'dashboard:home' %}" class="btn btn-sm btn-primary px-3 py-2 rounded-pill"><i class="bi bi-speedometer2 me-1"></i> Analytics Hub</a>
+                    <a href="{% url 'dashboard:order_list' %}" class="btn btn-sm btn-outline-light px-3 py-2 rounded-pill"><i class="bi bi-cart-check me-1"></i> Orders</a>
+                    <a href="{% url 'dashboard:menu_list' %}" class="btn btn-sm btn-outline-light px-3 py-2 rounded-pill"><i class="bi bi-egg-fried me-1"></i> Menu Items</a>
+                    <a href="{% url 'dashboard:category_list' %}" class="btn btn-sm btn-outline-light px-3 py-2 rounded-pill"><i class="bi bi-tags me-1"></i> Categories</a>
+                    <a href="{% url 'dashboard:coupon_list' %}" class="btn btn-sm btn-outline-light px-3 py-2 rounded-pill"><i class="bi bi-percent me-1"></i> Coupons</a>
+                    <a href="{% url 'dashboard:customer_list' %}" class="btn btn-sm btn-outline-light px-3 py-2 rounded-pill"><i class="bi bi-people me-1"></i> Customers</a>
+                    <a href="{% url 'dashboard:payment_list' %}" class="btn btn-sm btn-outline-light px-3 py-2 rounded-pill"><i class="bi bi-credit-card me-1"></i> Payments</a>
+                    <a href="{% url 'dashboard:review_list' %}" class="btn btn-sm btn-outline-light px-3 py-2 rounded-pill"><i class="bi bi-chat-left-text me-1"></i> Reviews</a>
+                    <a href="{% url 'dashboard:reservation_list' %}" class="btn btn-sm btn-outline-light px-3 py-2 rounded-pill"><i class="bi bi-calendar-check me-1"></i> Reservations</a>
+                    <a href="{% url 'dashboard:blog_list' %}" class="btn btn-sm btn-outline-light px-3 py-2 rounded-pill"><i class="bi bi-journal-text me-1"></i> Blogs</a>
+                    <a href="{% url 'dashboard:settings_edit' %}" class="btn btn-sm btn-outline-warning px-3 py-2 rounded-pill"><i class="bi bi-gear-fill me-1"></i> Settings</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Statistics Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-4 col-sm-6">
+                <div class="glass-card p-4 rounded-4 border border-white-10">
+                    <span class="text-secondary small d-block mb-1">Lifetime Revenue</span>
+                    <h3 class="text-primary mb-0 fw-bold">₹{{ total_revenue }}</h3>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="glass-card p-4 rounded-4 border border-white-10">
+                    <span class="text-secondary small d-block mb-1">Today's Revenue</span>
+                    <h3 class="text-warning mb-0 fw-bold">₹{{ today_revenue }}</h3>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="glass-card p-4 rounded-4 border border-white-10">
+                    <span class="text-secondary small d-block mb-1">Today's Orders</span>
+                    <h3 class="text-white mb-0 fw-bold">{{ today_orders_count }}</h3>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="glass-card p-4 rounded-4 border border-white-10">
+                    <span class="text-secondary small d-block mb-1">Total Placed Orders</span>
+                    <h3 class="text-white mb-0 fw-bold">{{ orders_count }}</h3>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="glass-card p-4 rounded-4 border border-white-10">
+                    <span class="text-secondary small d-block mb-1">Total Customers</span>
+                    <h3 class="text-success mb-0 fw-bold">{{ customer_count }}</h3>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="glass-card p-4 rounded-4 border border-white-10">
+                    <span class="text-secondary small d-block mb-1">Dishes in Catalog</span>
+                    <h3 class="text-white mb-0 fw-bold">{{ items_count }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Extra Statistics Cards Row -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3 col-sm-6">
+                <div class="glass-card p-4 rounded-4 border border-white-10">
+                    <span class="text-secondary small d-block mb-1">Weekly Revenue</span>
+                    <h3 class="text-primary mb-0 fw-bold">₹{{ weekly_revenue }}</h3>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="glass-card p-4 rounded-4 border border-white-10">
+                    <span class="text-secondary small d-block mb-1">Monthly Revenue</span>
+                    <h3 class="text-warning mb-0 fw-bold">₹{{ monthly_revenue }}</h3>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="glass-card p-4 rounded-4 border border-white-10">
+                    <span class="text-secondary small d-block mb-1">Peak Ordering Hour</span>
+                    <h3 class="text-white mb-0 fw-bold">{{ peak_ordering_hour }}</h3>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="glass-card p-4 rounded-4 border border-white-10">
+                    <span class="text-secondary small d-block mb-1">Pending Reservations</span>
+                    <h3 class="text-danger mb-0 fw-bold">{{ pending_reservations }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytical Charts Row -->
+        <div class="row g-4 mb-4">
+            <!-- Chart 1: Revenue trend -->
+            <div class="col-lg-8">
+                <div class="glass-card p-4 rounded-4 border border-white-10">
+                    <h5 class="text-white mb-4">Sales Revenue (Last 7 Days)</h5>
+                    <div style="height: 300px; position: relative;">
+                        <canvas id="revenueTrendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Chart 2: Category breakdown -->
+            <div class="col-lg-4">
+                <div class="glass-card p-4 rounded-4 border border-white-10">
+                    <h5 class="text-white mb-4">Dishes by Category</h5>
+                    <div style="height: 300px; position: relative; display: flex; justify-content: center; align-items: center;">
+                        <canvas id="categoryDistributionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Sales & Popular Items Row -->
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="glass-panel p-4 rounded-4 border border-white-10">
+                    <h5 class="text-white mb-4"><i class="bi bi-clock-history text-primary me-2"></i>Recent Sales</h5>
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover align-middle mb-0 glass-table">
+                            <thead>
+                                <tr class="text-secondary border-bottom border-white-10">
+                                    <th>Order #</th>
+                                    <th>Customer</th>
+                                    <th>Option</th>
+                                    <th>Payment</th>
+                                    <th>Status</th>
+                                    <th>Amount</th>
+                                    <th>Time</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in recent_orders %}
+                                <tr class="border-bottom border-white-5">
+                                    <td class="fw-semibold text-white">{{ order.order_number }}</td>
+                                    <td>
+                                        <div class="text-white small">{{ order.customer_name }}</div>
+                                        <div class="text-secondary small" style="font-size: 0.75rem;">{{ order.customer_phone }}</div>
+                                    </td>
+                                    <td>
+                                        <span class="badge {% if order.dining_option == 'DINE_IN' %}bg-primary-dim text-primary{% else %}bg-warning-dim text-warning{% endif %}">
+                                            {{ order.get_dining_option_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge {% if order.payment_status == 'COMPLETED' %}bg-success-dim text-success{% else %}bg-danger-dim text-danger{% endif %}">
+                                            {{ order.get_payment_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-slate-900 border border-white-10 text-white-50">
+                                            {{ order.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td class="fw-bold text-primary">₹{{ order.total_amount }}</td>
+                                    <td class="text-secondary small">{{ order.created_at|date:"M d, H:i" }}</td>
+                                    <td>
+                                        <a href="{% url 'core:order_track' order.order_number %}" class="btn btn-outline-primary btn-sm rounded-pill px-3" target="_blank">Track</a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="8" class="text-center py-4 text-secondary">No customer orders recorded yet.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Popular Items Column -->
+            <div class="col-lg-4">
+                <div class="glass-panel p-4 rounded-4 border border-white-10">
+                    <h5 class="text-white mb-4"><i class="bi bi-award text-primary me-2"></i>Popular Items Today</h5>
+                    <div class="list-group list-group-flush bg-transparent">
+                        {% for item in popular_items %}
+                        <div class="list-group-item bg-transparent border-white-10 px-0 d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-white mb-0 small">{{ item.menu_item__name }}</h6>
+                                <small class="text-secondary">Price: ₹{{ item.menu_item__price }}</small>
+                            </div>
+                            <span class="badge bg-primary-dim text-primary rounded-pill">{{ item.total_qty }} ordered</span>
+                        </div>
+                        {% empty %}
+                        <div class="text-center py-5 text-secondary small">
+                            <i class="bi bi-star-half d-block fs-3 mb-2 text-secondary-dim"></i>
+                            No sales data recorded today.
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart rendering javascript logic -->
+    <script>
+        // Setup Chart 1: Revenue Trends
+        const revLabels = JSON.parse('{{ chart_labels|safe }}');
+        const revData = JSON.parse('{{ chart_data|safe }}');
+        
+        const revCtx = document.getElementById('revenueTrendChart').getContext('2d');
+        new Chart(revCtx, {
+            type: 'line',
+            data: {
+                labels: revLabels,
+                datasets: [{
+                    label: 'Daily Revenue (₹)',
+                    data: revData,
+                    borderColor: '#FF6B35',
+                    backgroundColor: 'rgba(255, 107, 53, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#718096' } },
+                    y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#718096' } }
+                }
+            }
+        });
+
+        // Setup Chart 2: Category distribution
+        const catLabels = JSON.parse('{{ cat_labels|safe }}');
+        const catData = JSON.parse('{{ cat_data|safe }}');
+        
+        const catCtx = document.getElementById('categoryDistributionChart').getContext('2d');
+        new Chart(catCtx, {
+            type: 'doughnut',
+            data: {
+                labels: catLabels,
+                datasets: [{
+                    data: catData,
+                    backgroundColor: [
+                        '#FF6B35',
+                        '#FFD166',
+                        '#2ECC71',
+                        '#FF4D6D',
+                        '#4D96FF'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: '#E2E8F0', padding: 15 } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

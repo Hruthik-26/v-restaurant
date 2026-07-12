@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Blogs | V Restaurant</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="bg-slate-950 text-light overflow-x-hidden">
+
+    <!-- Top Navigation Bar -->
+    <nav class="navbar navbar-dark bg-slate-900 border-bottom border-white-10 py-3 sticky-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'dashboard:home' %}">
+                <i class="bi bi-chevron-left me-2 text-primary fs-5"></i>
+                <span class="fs-4 fw-bold text-uppercase tracking-widest text-gradient">V Restaurant</span>
+                <span class="badge bg-primary ms-2" style="font-size: 0.65rem;">MANAGE BLOGS</span>
+            </a>
+            <div class="d-flex align-items-center gap-3">
+                <form action="{% url 'dashboard:logout' %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm px-3 rounded-pill"><i class="bi bi-box-arrow-right me-1"></i> Logout</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid px-4 py-4">
+        <div class="glass-panel p-4 rounded-4 border border-white-10">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="font-playfair text-white fw-bold mb-0">Restaurant Blogs</h3>
+                <a href="{% url 'dashboard:blog_create' %}" class="btn btn-primary rounded-pill px-4"><i class="bi bi-plus-lg me-1"></i> Create Post</a>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table table-dark table-hover align-middle mb-0 glass-table">
+                    <thead>
+                        <tr class="text-secondary border-bottom border-white-10">
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Summary</th>
+                            <th>Published On</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for blog in blogs %}
+                        <tr class="border-bottom border-white-5">
+                            <td>
+                                <strong class="text-white">{{ blog.title }}</strong>
+                            </td>
+                            <td>
+                                <span class="text-white-50">{{ blog.author }}</span>
+                            </td>
+                            <td>
+                                <span class="text-secondary-dim small">{{ blog.summary|truncatechars:60 }}</span>
+                            </td>
+                            <td>
+                                <span class="text-white-50">{{ blog.created_at|date:"M d, Y" }}</span>
+                            </td>
+                            <td class="text-end">
+                                <div class="d-flex justify-content-end gap-2">
+                                    <a href="{% url 'dashboard:blog_edit' blog.id %}" class="btn btn-sm btn-outline-warning rounded-pill px-3">Edit</a>
+                                    <a href="{% url 'dashboard:blog_delete' blog.id %}" class="btn btn-sm btn-outline-danger rounded-pill px-3">Delete</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-secondary py-5">
+                                <i class="bi bi-journal-x fs-2 d-block mb-2 text-secondary-dim"></i>
+                                No culinary blog posts written yet.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

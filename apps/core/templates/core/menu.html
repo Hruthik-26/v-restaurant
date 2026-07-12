@@ -1,0 +1,220 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="menu-header-section position-relative" style="padding-top: 115px; padding-bottom: 0;">
+    <div class="container text-center" data-aos="fade-down">
+        <h1 class="display-4 fw-bold text-white font-playfair" style="margin-bottom: 24px;">Our Culinary Catalog</h1>
+        <p class="text-secondary mx-auto" style="max-width: 600px; margin-bottom: 40px;">Indulge in fresh flavors sourced responsibly and served with aesthetic sophistication.</p>
+    </div>
+</section>
+
+<!-- Menu Catalog & Filters -->
+<section class="pb-5">
+    <div class="container pb-5">
+        <div class="row g-4">
+            <!-- Filter Sidebar -->
+            <div class="col-lg-3" data-aos="fade-right">
+                <div class="glass-panel p-4 rounded-4 border border-white-10 menu-sidebar-scrollable">
+                    <!-- Search Bar -->
+                    <h5 class="text-white mb-3">Search</h5>
+                    <div class="input-group glass-input-group mb-4">
+                        <span class="input-group-text bg-transparent border-0"><i class="bi bi-search text-secondary"></i></span>
+                        <input type="text" class="form-control bg-transparent border-0 text-white placeholder-secondary" placeholder="Type to search..." id="search-input">
+                    </div>
+
+                    <!-- Categories list -->
+                    <h5 class="text-white mb-3">Categories</h5>
+                    <div class="d-flex flex-column gap-2 mb-4" id="category-filter-list">
+                        <button class="btn btn-sm glass-btn text-start active px-3 py-2 w-100 category-btn" data-category="">
+                            <i class="bi bi-grid-fill me-2 text-primary"></i> All Items
+                        </button>
+                        {% for cat in categories %}
+                        <button class="btn btn-sm glass-btn text-start px-3 py-2 w-100 category-btn" data-category="{{ cat.slug }}">
+                            <i class="bi {{ cat.icon }} me-2 text-primary"></i> {{ cat.name }}
+                        </button>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Dietary switches -->
+                    <h5 class="text-white mb-3">Dietary Prefs</h5>
+                    <div class="form-check form-switch mb-2">
+                        <input class="form-check-input" type="checkbox" role="switch" id="veg-switch">
+                        <label class="form-check-label text-secondary small" for="veg-switch">Vegetarian</label>
+                    </div>
+                    <div class="form-check form-switch mb-2">
+                        <input class="form-check-input" type="checkbox" role="switch" id="non-veg-switch">
+                        <label class="form-check-label text-secondary small" for="non-veg-switch">Non-Vegetarian</label>
+                    </div>
+                    <div class="form-check form-switch mb-4">
+                        <input class="form-check-input" type="checkbox" role="switch" id="available-switch" checked>
+                        <label class="form-check-label text-secondary small" for="available-switch">Available Only</label>
+                    </div>
+
+                    <!-- Meat type filter buttons -->
+                    <h5 class="text-white mb-3">Meat Options</h5>
+                    <div class="d-flex flex-wrap gap-2 mb-4" id="meat-filter-list">
+                        <button class="btn btn-sm glass-btn px-3 py-2 active meat-btn" data-meat="">All</button>
+                        <button class="btn btn-sm glass-btn px-3 py-2 meat-btn" data-meat="chicken">Chicken</button>
+                        <button class="btn btn-sm glass-btn px-3 py-2 meat-btn" data-meat="mutton">Mutton</button>
+                        <button class="btn btn-sm glass-btn px-3 py-2 meat-btn" data-meat="fish">Fish</button>
+                        <button class="btn btn-sm glass-btn px-3 py-2 meat-btn" data-meat="prawns">Prawns</button>
+                    </div>
+
+                    <!-- Sorting -->
+                    <h5 class="text-white mb-3">Sort By</h5>
+                    <select class="form-select bg-dark border-secondary text-white-50" id="sort-select">
+                        <option value="">Default (Newest)</option>
+                        <option value="price_asc">Price: Low → High</option>
+                        <option value="price_desc">Price: High → Low</option>
+                        <option value="rating">Highest Rated</option>
+                        <option value="popular">Most Ordered</option>
+                        <option value="alpha">Alphabetical</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Foods Grid Area -->
+            <div class="col-lg-9 menu-grid-scrollable" data-aos="fade-up">
+                <!-- Sorting & Results Summary -->
+                <div class="d-flex justify-content-between align-items-center mb-4 glass-card px-4 py-3 rounded-4 border border-white-10">
+                    <span class="text-secondary small"><span id="results-count">All</span> culinary creations available</span>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="text-secondary small d-none d-sm-inline-block">View:</span>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-secondary active" id="grid-view-btn"><i class="bi bi-grid-3x3-gap"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Food grid container (populated by AJAX or backend loads) -->
+                <div class="row g-4" id="menu-items-grid">
+                    {% include 'core/components/menu_grid.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Item Quick View Modal -->
+<div class="modal fade glass-modal" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content bg-slate-900 border border-white-10 text-white rounded-5 p-3" style="backdrop-filter: blur(30px);">
+            <div class="modal-header border-0 pb-0">
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-4" id="modal-item-content">
+                    <!-- Loaded dynamically via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let activeCategory = "";
+    let activeMeat = "";
+
+    // Debounce helper
+    function debounce(func, delay) {
+        let timer;
+        return function (...args) {
+            clearTimeout(timer);
+            timer = setTimeout(() => func.apply(this, args), delay);
+        };
+    }
+
+    function triggerSearch() {
+        const query = document.getElementById('search-input').value.trim();
+        const veg = document.getElementById('veg-switch').checked;
+        const nonVeg = document.getElementById('non-veg-switch').checked;
+        const available = document.getElementById('available-switch').checked;
+        const sort = document.getElementById('sort-select').value;
+
+        const url = `/menu/search/?q=${encodeURIComponent(query)}&category=${activeCategory}&veg=${veg}&non_veg=${nonVeg}&meat=${activeMeat}&available=${available}&sort=${sort}`;
+
+        fetch(url)
+            .then(res => res.json())
+            .then(data => {
+                const grid = document.getElementById('menu-items-grid');
+                grid.innerHTML = data.html;
+                
+                // Count items loaded
+                const cardsCount = grid.querySelectorAll('.menu-item-card-col').length;
+                document.getElementById('results-count').textContent = cardsCount > 0 ? cardsCount : "0";
+            })
+            .catch(err => console.error("Search fetch error: ", err));
+    }
+
+    // Bind event inputs
+    document.getElementById('search-input').addEventListener('input', debounce(triggerSearch, 400));
+    document.getElementById('veg-switch').addEventListener('change', triggerSearch);
+    document.getElementById('non-veg-switch').addEventListener('change', triggerSearch);
+    document.getElementById('available-switch').addEventListener('change', triggerSearch);
+    document.getElementById('sort-select').addEventListener('change', triggerSearch);
+
+    // Bind Category selection buttons
+    const catButtons = document.querySelectorAll('.category-btn');
+    catButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            catButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            activeCategory = btn.getAttribute('data-category');
+            triggerSearch();
+            
+            // Scroll category button into view inside sidebar if needed
+            btn.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest'
+            });
+
+            // Smooth scroll the menu grid list back to the top
+            const gridContainer = document.querySelector('.menu-grid-scrollable');
+            if (gridContainer) {
+                gridContainer.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    // Bind Meat options buttons
+    const meatButtons = document.querySelectorAll('.meat-btn');
+    meatButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            meatButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            activeMeat = btn.getAttribute('data-meat');
+            triggerSearch();
+        });
+    });
+
+    // Hide scrollbar until scrolling begins
+    const scrollables = document.querySelectorAll('.menu-sidebar-scrollable, .menu-grid-scrollable');
+    scrollables.forEach(el => {
+        let scrollTimeout;
+        el.addEventListener('scroll', () => {
+            el.classList.add('is-scrolling');
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                el.classList.remove('is-scrolling');
+            }, 1000);
+        }, { passive: true });
+        
+        // Show scrollbar on hover as a natural fallback
+        el.addEventListener('mouseenter', () => {
+            el.classList.add('is-scrolling');
+        });
+        el.addEventListener('mouseleave', () => {
+            el.classList.remove('is-scrolling');
+        });
+    });
+
+    // Run search on page load to set correct counts
+    triggerSearch();
+</script>
+{% endblock %}

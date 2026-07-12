@@ -1,0 +1,1 @@
+# Kitchen application package init

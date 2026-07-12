@@ -1,0 +1,58 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Culinary Blog | {{ settings.restaurant_name }}{% endblock %}
+
+{% block content %}
+<section class="menu-section py-5 mt-5">
+    <div class="container py-5">
+        <!-- Title and intro -->
+        <div class="row mb-5 text-center" data-aos="fade-up">
+            <div class="col-lg-8 mx-auto">
+                <span class="badge bg-primary-dim text-primary border border-primary-dim px-3 py-1 mb-3 text-uppercase tracking-wider">Culinary Chronicles</span>
+                <h1 class="text-white fw-bold font-playfair display-5 mb-3">V Restaurant Stories</h1>
+                <p class="text-secondary">Explore traditional Andhra recipes, dining histories, and behind-the-scenes secrets from our expert chefs.</p>
+            </div>
+        </div>
+
+        <!-- Blog cards grid -->
+        <div class="row g-4 justify-content-center">
+            {% for post in posts %}
+            <div class="col-lg-4 col-md-6 col-sm-12 blog-card-col" data-aos="zoom-in">
+                <div class="card h-100 bg-slate-900 border border-white-10 rounded-4 overflow-hidden food-card hover-lift glass-card position-relative">
+                    <div style="height: 220px; overflow: hidden; position: relative;">
+                        <img src="{{ post.get_image_url }}" alt="{{ post.title }}" class="w-100 h-100 object-fit-cover transition-zoom">
+                        <span class="position-absolute bottom-0 start-0 m-3 badge bg-dark-dim border border-white-10 px-2 py-1 text-white-50 small">
+                            <i class="bi bi-calendar3 me-1"></i> {{ post.created_at|date:"M d, Y" }}
+                        </span>
+                    </div>
+                    <div class="card-body p-4 d-flex flex-column">
+                        <h4 class="card-title font-playfair text-white fw-bold mb-2">{{ post.title }}</h4>
+                        <p class="card-text text-secondary small mb-4 flex-grow-1">{{ post.summary|default:post.content|truncatewords:20 }}</p>
+                        <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top border-white-10">
+                            <span class="text-white-50 small"><i class="bi bi-person-fill text-primary-dim me-1"></i> By {{ post.author }}</span>
+                            <a href="{% url 'core:blog_detail' post.slug %}" class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-semibold">Read More</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5 text-secondary">
+                <i class="bi bi-journal-x fs-1 d-block mb-3 text-secondary-dim"></i>
+                <p>No blog posts published yet. Stay tuned!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll('.blog-card-col').forEach((el, index) => {
+            el.setAttribute('data-aos-delay', (index * 100).toString());
+        });
+    });
+</script>
+{% endblock %}

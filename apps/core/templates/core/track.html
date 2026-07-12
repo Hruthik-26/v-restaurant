@@ -1,0 +1,219 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="tracking-section position-relative py-5 mt-5">
+    <div class="container py-5">
+        <div class="row g-5 align-items-center">
+            
+            <!-- Tracking timeline -->
+            <div class="col-lg-8" data-aos="fade-right">
+                <div class="glass-panel p-5 rounded-5 border border-white-10">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-5 gap-3">
+                        <div>
+                            <span class="badge bg-primary-dim text-primary text-uppercase tracking-wider px-3 py-2 rounded-pill mb-2">Live Timeline</span>
+                            <h2 class="text-white mb-2 font-playfair">Order #{{ order.order_number }}</h2>
+                            <a href="{% url 'core:order_invoice' order.order_number %}" download="Invoice-{{ order.order_number }}.pdf" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill px-3 py-2 hover-scale text-uppercase" style="font-size: 0.75rem;">
+                                <i class="bi bi-file-pdf me-1"></i> Download Invoice
+                            </a>
+                        </div>
+                        <div class="text-end">
+                            <span class="text-secondary small d-block">Estimated Preparation Time</span>
+                            <h4 class="text-primary mb-0" id="eta-display">Calculating...</h4>
+                        </div>
+                    </div>
+                    
+                    <!-- Progress Bar -->
+                    <div class="position-relative mb-5 py-3">
+                        <div class="progress bg-slate-900 border border-white-10" style="height: 10px; border-radius: 5px;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: {{ progress_percentage }}%;" aria-valuenow="{{ progress_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+
+                    <!-- Steps List -->
+                    <div class="row g-4 text-center justify-content-center">
+                        <div class="col-6 col-md-2 track-step {% if current_step >= 1 %}active{% endif %}" id="step-1">
+                            <div class="icon-box bg-slate-900 border rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px;">
+                                <i class="bi bi-receipt fs-4"></i>
+                            </div>
+                            <h6 class="text-white small mb-1">Received</h6>
+                            <span class="text-secondary small-dim">Queued</span>
+                        </div>
+                        
+                        <div class="col-6 col-md-2 track-step {% if current_step >= 2 %}active{% endif %}" id="step-2">
+                            <div class="icon-box bg-slate-900 border rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px;">
+                                <i class="bi bi-egg-fried fs-4"></i>
+                            </div>
+                            <h6 class="text-white small mb-1">Preparing</h6>
+                            <span class="text-secondary small-dim">Ingredients</span>
+                        </div>
+
+                        <div class="col-6 col-md-2 track-step {% if current_step >= 3 %}active{% endif %}" id="step-3">
+                            <div class="icon-box bg-slate-900 border rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px;">
+                                <i class="bi bi-fire fs-4 animate-pulse"></i>
+                            </div>
+                            <h6 class="text-white small mb-1">Cooking</h6>
+                            <span class="text-secondary small-dim">On Stove</span>
+                        </div>
+
+                        <div class="col-6 col-md-2 track-step {% if current_step >= 4 %}active{% endif %}" id="step-4">
+                            <div class="icon-box bg-slate-900 border rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px;">
+                                <i class="bi bi-box2-heart fs-4"></i>
+                            </div>
+                            <h6 class="text-white small mb-1">Packed</h6>
+                            <span class="text-secondary small-dim">Boxing</span>
+                        </div>
+
+                        <div class="col-6 col-md-2 track-step {% if current_step >= 5 %}active{% endif %}" id="step-5">
+                            <div class="icon-box bg-slate-900 border rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px;">
+                                <i class="bi bi-bell-fill fs-4 text-primary"></i>
+                            </div>
+                            <h6 class="text-white small mb-1">Ready</h6>
+                            <span class="text-secondary small-dim">At Counter</span>
+                        </div>
+
+                        <div class="col-6 col-md-2 track-step {% if current_step >= 6 %}active{% endif %}" id="step-6">
+                            <div class="icon-box bg-slate-900 border rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px;">
+                                <i class="bi bi-truck fs-4"></i>
+                            </div>
+                            <h6 class="text-white small mb-1">Transit</h6>
+                            <span class="text-secondary small-dim">Out for Delivery</span>
+                        </div>
+
+                        <div class="col-6 col-md-2 track-step {% if current_step >= 7 %}active{% endif %}" id="step-7">
+                            <div class="icon-box bg-slate-900 border rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px;">
+                                <i class="bi bi-check-circle-fill fs-4 text-success"></i>
+                            </div>
+                            <h6 class="text-white small mb-1">Delivered</h6>
+                            <span class="text-secondary small-dim">Enjoy!</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QR Code & Quick details sidebar -->
+            <div class="col-lg-4" data-aos="fade-left">
+                <div class="glass-panel p-4 rounded-5 border border-white-10 text-center">
+                    <h5 class="text-white mb-3">Scan to Track on Mobile</h5>
+                    <div class="d-flex justify-content-center my-4">
+                        <div class="bg-white p-3 rounded-4 shadow-glow" id="qrcode-canvas" style="width: 180px; height: 180px;"></div>
+                    </div>
+                    <p class="text-secondary small mb-4">Scan this secure QR code using your phone camera to monitor preparation state dynamically.</p>
+                    
+                    <div class="glass-card p-3 rounded-4 border border-white-10 text-start">
+                        <span class="text-white fw-semibold d-block mb-2 small"><i class="bi bi-truck text-primary me-2"></i>Delivery Details</span>
+                        <p class="text-secondary small mb-1"><strong>Mode:</strong> {{ order.get_dining_option_display }}</p>
+                        {% if order.dining_option == 'DINE_IN' %}
+                        <p class="text-secondary small mb-0"><strong>Table:</strong> Table #{{ order.table_number }}</p>
+                        {% elif order.dining_option == 'DELIVERY' %}
+                        <p class="text-secondary small mb-0"><strong>Address:</strong> {{ order.customer_address }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Include QR Code JS library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+    // Generate QR Code dynamically
+    const qrContainer = document.getElementById('qrcode-canvas');
+    new QRCode(qrContainer, {
+        text: window.location.href,
+        width: 150,
+        height: 150,
+        colorDark : "#0F172A",
+        colorLight : "#FFFFFF",
+        correctLevel : QRCode.CorrectLevel.H
+    });
+
+    // ETA Countdown timer
+    const targetTime = new Date("{{ order.estimated_time|date:'Y/m/d H:i:s' }}").getTime();
+    
+    function updateCountdown() {
+        const now = new Date().getTime();
+        const diff = targetTime - now;
+
+        if (diff <= 0) {
+            document.getElementById('eta-display').textContent = "Meal Ready!";
+            return;
+        }
+
+        const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+        document.getElementById('eta-display').textContent = `${mins}m ${secs}s left`;
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // Live AJAX Polling order status
+    // Hits the kitchen/api/orders/ to find if status changed
+    const orderNum = "{{ order.order_number }}";
+    
+    function checkOrderStatus() {
+        // Query kitchen api
+        fetch("{% url 'kitchen:api_orders' %}")
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    // Search for this order in the active orders
+                    const matchingOrder = data.orders.find(o => o.order_number === orderNum);
+                    if (matchingOrder) {
+                        const newStatus = matchingOrder.status;
+                        updateTimelineDOM(newStatus);
+                    } else {
+                        // Order not in active list means it is Completed / Delivered!
+                        updateTimelineDOM('DELIVERED');
+                    }
+                }
+            })
+            .catch(err => console.error("Polling error: ", err));
+    }
+
+    const statusSteps = {
+        'RECEIVED': 1,
+        'PREPARING': 2,
+        'COOKING': 3,
+        'PACKED': 4,
+        'READY': 5,
+        'OUT_FOR_DELIVERY': 6,
+        'DELIVERED': 7
+    };
+
+    function updateTimelineDOM(status) {
+        const stepNum = statusSteps[status] || 1;
+        const progressPct = Math.round(((stepNum - 1) / 6) * 100);
+        
+        // Update progress bar
+        const pb = document.querySelector('.progress-bar');
+        pb.style.width = `${progressPct}%`;
+        pb.setAttribute('aria-valuenow', progressPct);
+        
+        // Highlight active classes
+        for (let i = 1; i <= 7; i++) {
+            const stepEl = document.getElementById(`step-${i}`);
+            if (stepEl) {
+                if (i <= stepNum) {
+                    stepEl.classList.add('active');
+                } else {
+                    stepEl.classList.remove('active');
+                }
+            }
+        }
+        
+        if (status === 'DELIVERED') {
+            document.getElementById('eta-display').textContent = "Meal Completed!";
+        }
+    }
+
+    // Poll status every 8 seconds
+    setInterval(checkOrderStatus, 8000);
+</script>
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Login | {{ settings.restaurant_name }}{% endblock %}
+
+{% block content %}
+<section class="auth-section position-relative py-5 mt-5">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-5 col-md-8 col-sm-12" data-aos="zoom-in">
+                <!-- Outer Glass Panel -->
+                <div class="glass-panel p-5 rounded-4 border border-white-10 text-center">
+                    <h2 class="text-white fw-bold mb-2 font-playfair">Welcome Back</h2>
+                    <p class="text-secondary small mb-4">Select your login portal below to access your account.</p>
+
+                    <!-- Portal Selection Tabs -->
+                    <ul class="nav nav-pills nav-fill mb-4 glass-btn-group p-1 rounded-pill" id="loginTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active rounded-pill fw-semibold py-2" id="customer-tab" data-bs-toggle="tab" data-bs-target="#customer-login" type="button" role="tab" aria-controls="customer-login" aria-selected="true">
+                                <i class="bi bi-people-fill me-2"></i>Customer
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link rounded-pill fw-semibold py-2" id="admin-tab" data-bs-toggle="tab" data-bs-target="#admin-login" type="button" role="tab" aria-controls="admin-login" aria-selected="false">
+                                <i class="bi bi-shield-lock-fill me-2"></i>Staff/Admin
+                            </button>
+                        </li>
+                    </ul>
+
+                    <!-- Display Messages -->
+                    {% if messages %}
+                        <div class="mb-3">
+                            {% for message in messages %}
+                                <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} bg-transparent border-white-10 text-light py-2 px-3 small rounded" role="alert">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <!-- Tab Contents -->
+                    <div class="tab-content text-start" id="loginTabContent">
+                        <!-- Customer Login Form -->
+                        <div class="tab-pane fade show active" id="customer-login" role="tabpanel" aria-labelledby="customer-tab">
+                            <form method="POST" action="{% url 'core:login' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="login_type" value="customer">
+                                <input type="hidden" name="next" value="{{ request.GET.next|default:'' }}">
+                                
+                                <div class="form-floating mb-3 glass-floating">
+                                    <input type="text" class="form-control text-white bg-transparent" id="cust_username" name="username" placeholder="Email or Mobile Number" required>
+                                    <label for="cust_username">Email or Mobile Number</label>
+                                </div>
+                                <div class="form-floating mb-3 glass-floating">
+                                    <input type="password" class="form-control text-white bg-transparent" id="cust_password" name="password" placeholder="Password" required>
+                                    <label for="cust_password">Password</label>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="rememberMe">
+                                        <label class="form-check-label text-secondary small" for="rememberMe">Remember me</label>
+                                    </div>
+                                    <a href="{% url 'core:forgot_password' %}" class="text-primary small text-hover-underline">Forgot Password?</a>
+                                </div>
+
+                                <div class="d-grid mb-3">
+                                    <button type="submit" class="btn btn-primary py-3 rounded-pill fw-bold hover-scale shadow-glow text-uppercase tracking-wider">Login as Customer</button>
+                                </div>
+                                <p class="text-secondary text-center small mb-0">Don't have a customer account? <a href="{% url 'core:register' %}" class="text-primary fw-semibold text-hover-underline">Register Here</a></p>
+                            </form>
+                        </div>
+
+                        <!-- Admin/Staff Login Form -->
+                        <div class="tab-pane fade" id="admin-login" role="tabpanel" aria-labelledby="admin-tab">
+                            <form method="POST" action="{% url 'core:login' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="login_type" value="admin">
+                                <input type="hidden" name="next" value="{% url 'dashboard:home' %}">
+                                
+                                <div class="form-floating mb-3 glass-floating">
+                                    <input type="text" class="form-control text-white bg-transparent" id="admin_username" name="username" placeholder="Username" required>
+                                    <label for="admin_username">Username/Staff Email</label>
+                                </div>
+                                <div class="form-floating mb-4 glass-floating">
+                                    <input type="password" class="form-control text-white bg-transparent" id="admin_password" name="password" placeholder="Password" required>
+                                    <label for="admin_password">Password</label>
+                                </div>
+
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-outline-primary py-3 rounded-pill fw-bold hover-scale text-uppercase tracking-wider">Login as Staff</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

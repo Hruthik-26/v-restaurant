@@ -1,0 +1,36 @@
+/* ============================================================
+   V Restaurant - Romantic High-Quality Border & Background System
+   ============================================================ */
+
+/* Base Body tweaks to set the image background */
+body {
+    background-color: #050505 !important;
+    background-image: url('../images/bg_exact.png') !important;
+    background-size: cover !important;
+    background-position: center bottom !important;
+    background-repeat: no-repeat !important;
+    background-attachment: fixed !important;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Base layout wrapper sits above the decorations */
+.d-flex.flex-column.min-vh-100 {
+    position: relative;
+    z-index: 10;
+}
+
+
+
+@keyframes candle-flicker {
+    0%, 100% { opacity: 0.85; }
+    30% { opacity: 0.95; }
+    35% { opacity: 0.88; }
+    70% { opacity: 1.0; }
+    85% { opacity: 0.92; }
+}
+
+@keyframes heart-glow {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1.0; }
+}

@@ -1,0 +1,135 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Contact Us | {{ settings.restaurant_name }}{% endblock %}
+
+{% block content %}
+<section class="contact-section position-relative py-5 mt-5">
+    <div class="container py-5">
+        <div class="text-center mb-5" data-aos="fade-down">
+            <h1 class="display-5 fw-bold text-white font-playfair mb-3">Contact V Restaurant</h1>
+            <p class="text-secondary mx-auto" style="max-width: 600px;">Have a question or feedback? Reach out to our gourmet concierge team.</p>
+        </div>
+
+        <div class="row g-5">
+            <!-- Contact details -->
+            <div class="col-lg-5" data-aos="fade-right">
+                <div class="glass-panel p-4 rounded-4 border border-white-10 h-100">
+                    <h4 class="text-white mb-4"><i class="bi bi-info-circle text-primary me-2"></i>Concierge Details</h4>
+                    
+                    <div class="mb-4 d-flex gap-3">
+                        <div class="icon-circle bg-primary-dim p-3 rounded-circle text-primary" style="height: 50px; width: 50px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-telephone fs-5"></i>
+                        </div>
+                        <div>
+                            <span class="text-secondary small d-block">Phone Number</span>
+                            <strong class="text-white fs-6">{{ settings.contact_phone }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="mb-4 d-flex gap-3">
+                        <div class="icon-circle bg-primary-dim p-3 rounded-circle text-primary" style="height: 50px; width: 50px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-envelope fs-5"></i>
+                        </div>
+                        <div>
+                            <span class="text-secondary small d-block">Email Address</span>
+                            <strong class="text-white fs-6">{{ settings.contact_email }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="mb-4 d-flex gap-3">
+                        <div class="icon-circle bg-primary-dim p-3 rounded-circle text-primary" style="height: 50px; width: 50px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-geo-alt fs-5"></i>
+                        </div>
+                        <div>
+                            <span class="text-secondary small d-block">Address Location</span>
+                            <strong class="text-white fs-6">{{ settings.address }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="mb-4 d-flex gap-3">
+                        <div class="icon-circle bg-primary-dim p-3 rounded-circle text-primary" style="height: 50px; width: 50px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-clock fs-5"></i>
+                        </div>
+                        <div>
+                            <span class="text-secondary small d-block">Opening Hours</span>
+                            <strong class="text-white small">{{ settings.opening_hours }}</strong>
+                        </div>
+                    </div>
+
+                    <!-- Map Embedding -->
+                    <div class="ratio ratio-16x9 rounded overflow-hidden border border-white-10 mt-4">
+                        <iframe src="{{ settings.google_maps_url }}" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="col-lg-7" data-aos="fade-left">
+                <div class="glass-panel p-5 rounded-4 border border-white-10">
+                    <h4 class="text-white mb-4"><i class="bi bi-envelope-paper text-primary me-2"></i>Send Feedback</h4>
+                    
+                    <form id="contact-form-page" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6 form-floating mb-3 glass-floating">
+                                <input type="text" class="form-control text-white bg-transparent" id="c_name" name="name" placeholder="Name" required>
+                                <label for="c_name">Full Name</label>
+                            </div>
+                            <div class="col-md-6 form-floating mb-3 glass-floating">
+                                <input type="email" class="form-control text-white bg-transparent" id="c_email" name="email" placeholder="Email" required>
+                                <label for="c_email">Email Address</label>
+                            </div>
+                            <div class="col-12 form-floating mb-3 glass-floating">
+                                <input type="text" class="form-control text-white bg-transparent" id="c_subject" name="subject" placeholder="Subject" required>
+                                <label for="c_subject">Message Subject</label>
+                            </div>
+                            <div class="col-12 form-floating mb-3 glass-floating">
+                                <textarea class="form-control text-white bg-transparent" id="c_message" name="message" placeholder="Message" required style="height: 150px;"></textarea>
+                                <label for="c_message">Detailed Message</label>
+                            </div>
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary py-3 rounded-pill fw-bold hover-scale shadow-glow text-uppercase tracking-wider">Submit Feedback</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.getElementById('contact-form-page')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const form = e.target;
+        const formData = new FormData(form);
+        const csrfToken = formData.get('csrfmiddlewaretoken');
+
+        fetch("{% url 'core:contact' %}", {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': csrfToken
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                showToast(data.message);
+                form.reset();
+            } else {
+                showToast(data.message || "Feedback submission failed.", true);
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            showToast("Network error submitting feedback.", true);
+        });
+    });
+</script>
+{% endblock %}

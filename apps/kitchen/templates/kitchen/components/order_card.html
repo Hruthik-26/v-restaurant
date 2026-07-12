@@ -1,0 +1,73 @@
+<div class="card bg-slate-900 border border-white-10 rounded-4 p-3 mb-3 order-kitchen-card glass-card" 
+     id="order-card-{{ order.id }}" 
+     draggable="true" 
+     ondragstart="handleDragStart(event, '{{ order.id }}')"
+     data-order-id="{{ order.id }}">
+    
+    <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom border-white-10">
+        <span class="fw-bold text-white small">{{ order.order_number }}</span>
+        <!-- Dynamic Elapsed Cooking Timer -->
+        <span class="badge bg-slate-950 border border-white-10 text-primary elapsed-timer-badge" 
+              data-created-time="{{ order.created_at|date:'Y-m-d\TH:i:s' }}">
+            0m ago
+        </span>
+    </div>
+    
+    <!-- Customer Details -->
+    <div class="mb-3">
+        <h6 class="text-white mb-0">{{ order.customer_name }}</h6>
+        <span class="badge {% if order.dining_option == 'DINE_IN' %}bg-primary-dim text-primary{% elif order.dining_option == 'DELIVERY' %}bg-warning-dim text-warning{% else %}bg-info-dim text-info{% endif %} px-2 py-1 mt-1 small" style="font-size: 0.7rem;">
+            {{ order.get_dining_option_display }} {% if order.dining_option == 'DINE_IN' %}(Table #{{ order.table_number }}){% endif %}
+        </span>
+    </div>
+    
+    <!-- Ordered Dishes list -->
+    <div class="mb-3 bg-slate-950-50 p-2 rounded border border-white-5">
+        <ul class="list-unstyled mb-0 small">
+            {% for item in order.items.all %}
+            <li class="text-secondary d-flex justify-content-between">
+                <span>{{ item.menu_item.name }}</span>
+                <strong class="text-white">x{{ item.quantity }}</strong>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+    <!-- Actions and priority controls -->
+    <div class="d-flex justify-content-between align-items-center">
+        <!-- Status Action Buttons -->
+        <div>
+            {% if order.status == 'RECEIVED' %}
+            <button class="btn btn-primary btn-sm px-3 rounded-pill fw-semibold btn-status-action" onclick="updateOrderStatus('{{ order.id }}', 'PREPARING')">
+                Prepare <i class="bi bi-play-fill"></i>
+            </button>
+            {% elif order.status == 'PREPARING' %}
+            <button class="btn btn-warning btn-sm px-3 rounded-pill fw-semibold btn-status-action" onclick="updateOrderStatus('{{ order.id }}', 'COOKING')">
+                Cook <i class="bi bi-egg-fried"></i>
+            </button>
+            {% elif order.status == 'COOKING' %}
+            <button class="btn btn-info btn-sm px-3 rounded-pill fw-semibold btn-status-action" onclick="updateOrderStatus('{{ order.id }}', 'PACKING')">
+                Pack <i class="bi bi-box2-fill"></i>
+            </button>
+            {% elif order.status == 'PACKING' %}
+            <button class="btn btn-success btn-sm px-3 rounded-pill fw-semibold btn-status-action" onclick="updateOrderStatus('{{ order.id }}', 'READY')">
+                Ready <i class="bi bi-check-lg"></i>
+            </button>
+            {% elif order.status == 'READY' %}
+            <button class="btn btn-success btn-sm px-3 rounded-pill fw-semibold btn-status-action text-uppercase" onclick="updateOrderStatus('{{ order.id }}', 'DELIVERED')">
+                Deliver <i class="bi bi-check-circle-fill"></i>
+            </button>
+            {% endif %}
+        </div>
+        
+        <!-- Priority controls -->
+        <div class="d-flex gap-1">
+            <button class="btn btn-icon btn-sm glass-btn border-white-10" onclick="adjustPriority('{{ order.id }}', 1)" title="Increase Priority">
+                <i class="bi bi-chevron-up text-danger"></i>
+            </button>
+            <button class="btn btn-icon btn-sm glass-btn border-white-10" onclick="adjustPriority('{{ order.id }}', -1)" title="Decrease Priority">
+                <i class="bi bi-chevron-down text-secondary"></i>
+            </button>
+        </div>
+    </div>
+</div>

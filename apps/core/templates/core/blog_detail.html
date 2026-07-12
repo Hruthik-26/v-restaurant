@@ -1,0 +1,56 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}{{ post.title }} | {{ settings.restaurant_name }}{% endblock %}
+
+{% block content %}
+<section class="menu-section py-5 mt-5">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8" data-aos="fade-up">
+                <!-- Back link -->
+                <div class="mb-4">
+                    <a href="{% url 'core:blog_list' %}" class="text-primary small text-hover-underline d-inline-flex align-items-center gap-2">
+                        <i class="bi bi-arrow-left"></i> Back to Culinary Chronicles
+                    </a>
+                </div>
+
+                <!-- Cover image -->
+                <div class="rounded-4 overflow-hidden mb-5 border border-white-10 shadow-lg" style="max-height: 450px;">
+                    <img src="{{ post.get_image_url }}" alt="{{ post.title }}" class="w-100 h-100 object-fit-cover">
+                </div>
+
+                <!-- Post header -->
+                <span class="badge bg-primary-dim text-primary border border-primary-dim px-3 py-1 mb-3 text-uppercase tracking-wider">Culinary Chronicles</span>
+                <h1 class="text-white fw-bold font-playfair display-4 mb-3">{{ post.title }}</h1>
+                
+                <div class="d-flex align-items-center gap-3 text-secondary border-bottom border-white-10 pb-4 mb-4 small">
+                    <span><i class="bi bi-person-fill text-primary-dim me-1"></i> By {{ post.author }}</span>
+                    <span>•</span>
+                    <span><i class="bi bi-calendar3 me-1"></i> Published on {{ post.created_at|date:"F d, Y" }}</span>
+                    {% if post.created_at != post.updated_at %}
+                        <span>•</span>
+                        <span class="text-white-50">(Updated {{ post.updated_at|date:"M d, Y" }})</span>
+                    {% endif %}
+                </div>
+
+                <!-- Post content -->
+                <div class="text-secondary-dim font-playfair fs-5 leading-relaxed text-light-body" style="text-align: justify; line-height: 1.8;">
+                    {{ post.content|linebreaks }}
+                </div>
+
+                <!-- Footer share or navigation -->
+                <div class="d-flex justify-content-between align-items-center mt-5 pt-4 border-top border-white-10">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="text-white-50 small">Share:</span>
+                        <a href="#" class="btn btn-icon btn-sm glass-btn text-white-50"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="btn btn-icon btn-sm glass-btn text-white-50"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#" class="btn btn-icon btn-sm glass-btn text-white-50"><i class="bi bi-link-45deg"></i></a>
+                    </div>
+                    <a href="{% url 'core:blog_list' %}" class="btn btn-primary rounded-pill px-4">All Stories</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

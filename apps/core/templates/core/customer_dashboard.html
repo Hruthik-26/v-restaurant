@@ -1,0 +1,525 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Customer Dashboard | {{ settings.restaurant_name }}{% endblock %}
+
+{% block content %}
+<section class="dashboard-section position-relative py-5 mt-5">
+    <div class="container py-5">
+        <div class="row g-4">
+            
+            <!-- Dashboard Sidebar -->
+            <div class="col-lg-4" data-aos="fade-right">
+                <div class="glass-panel p-4 rounded-4 border border-white-10 text-center position-relative">
+                    
+                    <!-- Profile Photo Wrapper -->
+                    <div class="position-relative d-inline-block mb-3">
+                        <div class="rounded-circle overflow-hidden border border-primary p-1" style="width: 120px; height: 120px;">
+                            {% if customer.profile_photo %}
+                            <img src="{{ customer.profile_photo.url }}" class="w-100 h-100 object-fit-cover rounded-circle" id="profile-img">
+                            {% else %}
+                            <div class="w-100 h-100 bg-slate-800 d-flex align-items-center justify-content-center text-primary rounded-circle fs-1">
+                                <i class="bi bi-person-circle"></i>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <h4 class="text-white mb-1 fw-bold">{{ customer.name }}</h4>
+                    <p class="text-secondary small mb-3"><i class="bi bi-telephone text-primary me-2"></i>{{ customer.phone }}</p>
+                    
+                    <!-- Reward Points Badge -->
+                    <div class="bg-primary-dim border border-primary rounded-pill py-2 px-4 mb-4 d-inline-block">
+                        <span class="text-primary small fw-bold"><i class="bi bi-gift-fill me-2"></i>{{ customer.reward_points }} Reward Points</span>
+                    </div>
+
+                    <!-- Navigation Pills -->
+                    <div class="nav flex-column nav-pills gap-2 text-start" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                        <button class="nav-link active text-white" id="v-pills-overview-tab" data-bs-toggle="pill" data-bs-target="#v-pills-overview" type="button" role="tab" aria-controls="v-pills-overview" aria-selected="true">
+                            <i class="bi bi-grid-fill me-3"></i>Dashboard Overview
+                        </button>
+                        <button class="nav-link text-white" id="v-pills-history-tab" data-bs-toggle="pill" data-bs-target="#v-pills-history" type="button" role="tab" aria-controls="v-pills-history" aria-selected="false">
+                            <i class="bi bi-clock-history me-3"></i>Order History
+                        </button>
+                        <button class="nav-link text-white" id="v-pills-addresses-tab" data-bs-toggle="pill" data-bs-target="#v-pills-addresses" type="button" role="tab" aria-controls="v-pills-addresses" aria-selected="false">
+                            <i class="bi bi-geo-alt-fill me-3"></i>Saved Addresses
+                        </button>
+                        <button class="nav-link text-white" id="v-pills-favorites-tab" data-bs-toggle="pill" data-bs-target="#v-pills-favorites" type="button" role="tab" aria-controls="v-pills-favorites" aria-selected="false">
+                            <i class="bi bi-heart-fill me-3"></i>Favorite Items
+                        </button>
+                        <button class="nav-link text-white" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">
+                            <i class="bi bi-person-gear me-3"></i>Edit Profile / Security
+                        </button>
+                        <button class="nav-link text-white" id="v-pills-reservations-tab" data-bs-toggle="pill" data-bs-target="#v-pills-reservations" type="button" role="tab" aria-controls="v-pills-reservations" aria-selected="false">
+                            <i class="bi bi-calendar-check me-3"></i>Table Bookings
+                        </button>
+                        <button class="nav-link text-white" id="v-pills-notifications-tab" data-bs-toggle="pill" data-bs-target="#v-pills-notifications" type="button" role="tab" aria-controls="v-pills-notifications" aria-selected="false">
+                            <i class="bi bi-bell-fill me-3"></i>Alerts & Offers
+                        </button>
+                        <form action="{% url 'core:logout' %}" method="post" class="mt-3">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-danger w-100 py-2.5 rounded-pill"><i class="bi bi-box-arrow-right me-2"></i> Logout</button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Dashboard Content Areas -->
+            <div class="col-lg-8" data-aos="fade-left">
+                <div class="glass-panel p-4 rounded-4 border border-white-10 h-100 min-vh-50">
+                    
+                    {% if messages %}
+                        <div class="mb-3">
+                            {% for message in messages %}
+                                <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} bg-transparent border-white-10 text-light py-2 px-3 small rounded" role="alert">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <div class="tab-content" id="v-pills-tabContent">
+                        
+                        <!-- TAB 1: OVERVIEW -->
+                        <div class="tab-pane fade show active" id="v-pills-overview" role="tabpanel" aria-labelledby="v-pills-overview-tab">
+                            <h4 class="text-white mb-4">Hello, {{ customer.name }}!</h4>
+                            
+                            <!-- Stats Rows -->
+                            <div class="row g-3 mb-4 text-center">
+                                <div class="col-6 col-md-3">
+                                    <div class="glass-card p-3 border border-white-10 rounded-3">
+                                        <span class="text-secondary small d-block mb-1">Total Orders</span>
+                                        <h3 class="text-white mb-0 fw-bold">{{ stats.total_orders }}</h3>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="glass-card p-3 border border-white-10 rounded-3">
+                                        <span class="text-secondary small d-block mb-1">Completed</span>
+                                        <h3 class="text-success mb-0 fw-bold">{{ stats.completed_orders }}</h3>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="glass-card p-3 border border-white-10 rounded-3">
+                                        <span class="text-secondary small d-block mb-1">Pending</span>
+                                        <h3 class="text-warning mb-0 fw-bold">{{ stats.pending_orders }}</h3>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="glass-card p-3 border border-white-10 rounded-3">
+                                        <span class="text-secondary small d-block mb-1">Total Spent</span>
+                                        <h3 class="text-primary mb-0 fw-bold">₹{{ stats.total_spent }}</h3>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Current Active Order tracking -->
+                            {% if active_order %}
+                            <div class="glass-card p-4 border border-primary-dim rounded-4 mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div>
+                                        <span class="badge bg-primary text-white text-uppercase tracking-wider mb-2">Active Order</span>
+                                        <h5 class="text-white mb-0">{{ active_order.order_number }}</h5>
+                                    </div>
+                                    <a href="{% url 'core:order_track' active_order.order_number %}" class="btn btn-outline-primary btn-sm rounded-pill px-4" target="_blank"><i class="bi bi-radar me-1 animate-pulse"></i> Track Live</a>
+                                </div>
+                                <div class="d-flex justify-content-between text-secondary small">
+                                    <span>Status: <strong class="text-white">{{ active_order.get_status_display }}</strong></span>
+                                    <span>Est. Delivery: <strong class="text-white">{{ active_order.estimated_time|date:"H:i" }}</strong></span>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <!-- Extra Information -->
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="glass-card p-4 border border-white-10 rounded-4 h-100">
+                                        <h6 class="text-white mb-3"><i class="bi bi-star-fill text-warning me-2"></i>Most Ordered Item</h6>
+                                        {% if stats.most_ordered_item %}
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="rounded overflow-hidden" style="width: 50px; height: 50px;">
+                                                <img src="{{ stats.most_ordered_item.menu_item.get_image_url }}" class="w-100 h-100 object-fit-cover">
+                                            </div>
+                                            <div>
+                                                <h6 class="text-white mb-0 small">{{ stats.most_ordered_item.menu_item.name }}</h6>
+                                                <small class="text-secondary">Ordered {{ stats.most_ordered_item.total_qty }} times</small>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <p class="text-secondary small mb-0">No order statistics yet.</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="glass-card p-4 border border-white-10 rounded-4 h-100">
+                                        <h6 class="text-white mb-3"><i class="bi bi-tag-fill text-primary me-2"></i>Available Coupons</h6>
+                                        <div class="list-group list-group-flush bg-transparent">
+                                            {% for coupon in coupons %}
+                                            <div class="list-group-item bg-transparent border-white-5 px-0 py-2 d-flex justify-content-between align-items-center">
+                                                <span class="badge bg-slate-900 border border-white-10 text-white font-monospace">{{ coupon.code }}</span>
+                                                <span class="text-primary small fw-semibold">{{ coupon.discount_percent }}% OFF</span>
+                                            </div>
+                                            {% empty %}
+                                            <p class="text-secondary small mb-0">No active promotions right now.</p>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- AI Recommended Dishes -->
+                            <div class="glass-card p-4 border border-white-10 rounded-4 mt-4">
+                                <h5 class="text-white mb-3 font-playfair"><i class="bi bi-magic text-primary me-2"></i>Recommended Dishes For You</h5>
+                                <div class="row g-3">
+                                    {% for rec in ai_recommendations %}
+                                    <div class="col-6 col-md-3">
+                                        <div class="card bg-slate-950 border border-white-5 p-2 rounded-3 text-center" style="cursor: pointer;" onclick="quickView('{{ rec.id }}')">
+                                            <img src="{{ rec.get_image_url }}" alt="{{ rec.name }}" class="w-100 rounded object-fit-cover mb-2" style="height: 100px;">
+                                            <h6 class="text-white small d-block text-truncate mb-1">{{ rec.name }}</h6>
+                                            <span class="text-primary small">₹{{ rec.price }}</span>
+                                        </div>
+                                    </div>
+                                    {% empty %}
+                                    <div class="col-12">
+                                        <p class="text-secondary small mb-0">Browse our menu and order items to get customized recommendations!</p>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- Recently Viewed Items -->
+                            {% if recently_viewed %}
+                            <div class="glass-card p-4 border border-white-10 rounded-4 mt-4">
+                                <h5 class="text-white mb-3 font-playfair"><i class="bi bi-eye text-primary me-2"></i>Recently Viewed Culinary Creations</h5>
+                                <div class="row g-3">
+                                    {% for rv in recently_viewed %}
+                                    <div class="col-6 col-md-2 col-sm-3">
+                                        <div class="card bg-slate-950 border border-white-5 p-2 rounded-3 text-center" style="cursor: pointer;" onclick="quickView('{{ rv.id }}')">
+                                            <img src="{{ rv.get_image_url }}" alt="{{ rv.name }}" class="w-100 rounded object-fit-cover mb-2" style="height: 60px;">
+                                            <h6 class="text-white small d-block text-truncate mb-1" style="font-size: 0.65rem;">{{ rv.name }}</h6>
+                                            <span class="text-primary small" style="font-size: 0.7rem;">₹{{ rv.price }}</span>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- TAB 2: ORDER HISTORY -->
+                        <div class="tab-pane fade" id="v-pills-history" role="tabpanel" aria-labelledby="v-pills-history-tab">
+                            <h4 class="text-white mb-4"><i class="bi bi-clock-history text-primary me-2"></i>Previous Orders</h4>
+                            <div class="table-responsive">
+                                <table class="table table-dark table-hover align-middle mb-0 glass-table">
+                                    <thead>
+                                        <tr class="text-secondary border-bottom border-white-10">
+                                            <th>Order #</th>
+                                            <th>Date</th>
+                                            <th>Items</th>
+                                            <th>Bill</th>
+                                            <th>Method</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for order in orders %}
+                                        <tr class="border-bottom border-white-5">
+                                            <td class="fw-semibold text-white">{{ order.order_number }}</td>
+                                            <td class="small text-secondary">{{ order.created_at|date:"Y-m-d H:i" }}</td>
+                                            <td class="small">
+                                                {% for item in order.items.all %}
+                                                    <div>{{ item.quantity }} x {{ item.menu_item.name }}</div>
+                                                {% endfor %}
+                                            </td>
+                                            <td class="fw-bold text-primary">₹{{ order.total_amount }}</td>
+                                            <td class="small">{{ order.get_payment_method_display }}</td>
+                                            <td>
+                                                <span class="badge bg-slate-900 border border-white-10 text-white-50">
+                                                    {{ order.get_status_display }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex flex-column gap-1">
+                                                    <a href="{% url 'core:order_invoice' order.order_number %}" class="btn btn-outline-secondary btn-sm px-2 py-1" style="font-size: 0.75rem;"><i class="bi bi-download"></i> Invoice</a>
+                                                    
+                                                    <!-- Reorder trigger button -->
+                                                    <button class="btn btn-primary btn-sm px-2 py-1" style="font-size: 0.75rem;" onclick="reorderItems('{{ order.order_number }}')">
+                                                        <i class="bi bi-arrow-repeat"></i> Reorder
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="7" class="text-center py-4 text-secondary">You haven't placed any orders yet.</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- TAB 3: SAVED ADDRESSES -->
+                        <div class="tab-pane fade" id="v-pills-addresses" role="tabpanel" aria-labelledby="v-pills-addresses-tab">
+                            <h4 class="text-white mb-4"><i class="bi bi-geo-alt-fill text-primary me-2"></i>Saved Delivery Addresses</h4>
+                            
+                            <div class="row g-3 mb-4">
+                                {% for addr in addresses %}
+                                <div class="col-md-6">
+                                    <div class="glass-card p-3 border border-white-10 rounded-3 h-100 position-relative">
+                                        {% if addr.is_default %}
+                                        <span class="badge bg-success-dim text-success border border-success-dim position-absolute top-0 end-0 m-2" style="font-size: 0.65rem;">Default</span>
+                                        {% endif %}
+                                        <p class="text-white mb-1 small">{{ addr.address_line }}</p>
+                                        <span class="text-secondary small">{{ addr.city }}</span>
+                                        
+                                        <div class="mt-3 d-flex gap-2">
+                                            <form method="POST" action="">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action" value="delete_address">
+                                                <input type="hidden" name="address_id" value="{{ addr.id }}">
+                                                <button type="submit" class="btn btn-link text-danger text-decoration-none btn-sm p-0">Delete</button>
+                                            </form>
+                                            {% if not addr.is_default %}
+                                            <form method="POST" action="">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action" value="set_default_address">
+                                                <input type="hidden" name="address_id" value="{{ addr.id }}">
+                                                <button type="submit" class="btn btn-link text-primary text-decoration-none btn-sm p-0">Set as Default</button>
+                                            </form>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% empty %}
+                                <div class="col-12 text-center py-3 text-secondary">No saved addresses found.</div>
+                                {% endfor %}
+                            </div>
+
+                            <hr class="border-white-10 my-4">
+                            <h5 class="text-white mb-3">Add New Address</h5>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="add_address">
+                                <div class="row g-3">
+                                    <div class="col-12 form-floating glass-floating">
+                                        <textarea class="form-control text-white bg-transparent" id="new_addr_line" name="address_line" placeholder="Address" required style="height: 80px;"></textarea>
+                                        <label for="new_addr_line">Street Address / Floor / Apartment</label>
+                                    </div>
+                                    <div class="col-md-8 form-floating glass-floating">
+                                        <input type="text" class="form-control text-white bg-transparent" id="new_addr_city" name="city" placeholder="City" required>
+                                        <label for="new_addr_city">City</label>
+                                    </div>
+                                    <div class="col-md-4 d-flex align-items-center ps-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="new_addr_default" name="is_default">
+                                            <label class="form-check-label text-secondary small" for="new_addr_default">Set as default</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary mt-3 px-4 rounded-pill">Add Address</button>
+                            </form>
+                        </div>
+
+                        <!-- TAB 4: FAVORITE ITEMS -->
+                        <div class="tab-pane fade" id="v-pills-favorites" role="tabpanel" aria-labelledby="v-pills-favorites-tab">
+                            <h4 class="text-white mb-4"><i class="bi bi-heart-fill text-danger me-2"></i>My Favorites</h4>
+                            <div class="row g-3">
+                                {% for fav in favorites %}
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="glass-card p-3 border border-white-10 rounded-3 d-flex align-items-center gap-3">
+                                        <div class="rounded overflow-hidden" style="width: 70px; height: 70px; flex-shrink: 0;">
+                                            <img src="{{ fav.menu_item.get_image_url }}" class="w-100 h-100 object-fit-cover">
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="text-white mb-1 small">{{ fav.menu_item.name }}</h6>
+                                            <span class="text-primary fw-semibold small">₹{{ fav.menu_item.price }}</span>
+                                        </div>
+                                        <div class="d-flex flex-column gap-1">
+                                            <button class="btn btn-outline-primary btn-sm px-2 py-1" style="font-size: 0.75rem;"
+                                                    onclick="cart.add('{{ fav.menu_item.id }}', '{{ fav.menu_item.name }}', {{ fav.menu_item.price }}, '{{ fav.menu_item.get_image_url }}', {{ fav.menu_item.is_veg|lower }})">
+                                                <i class="bi bi-plus-lg"></i> Add
+                                            </button>
+                                            <form method="POST" action="">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action" value="remove_favorite">
+                                                <input type="hidden" name="favorite_id" value="{{ fav.id }}">
+                                                <button type="submit" class="btn btn-link text-danger text-decoration-none btn-sm p-0" style="font-size: 0.7rem;">Remove</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% empty %}
+                                <div class="col-12 text-center py-4 text-secondary">You haven't saved any favorites yet.</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- TAB 5: PROFILE EDIT & PASSWORD -->
+                        <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                            <h4 class="text-white mb-4"><i class="bi bi-person-gear text-primary me-2"></i>Profile Information</h4>
+                            <form method="POST" enctype="multipart/form-data" class="mb-5">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="update_profile">
+                                
+                                <div class="row g-3">
+                                    <div class="col-md-6 form-floating glass-floating">
+                                        <input type="text" class="form-control text-white bg-transparent" id="prof_name" name="name" placeholder="Name" value="{{ customer.name }}" required>
+                                        <label for="prof_name">Full Name</label>
+                                    </div>
+                                    <div class="col-md-6 form-floating glass-floating">
+                                        <input type="tel" class="form-control text-white bg-transparent" id="prof_phone" name="phone" placeholder="Phone" value="{{ customer.phone }}" required>
+                                        <label for="prof_phone">Phone Number</label>
+                                    </div>
+                                    <div class="col-12 form-floating glass-floating">
+                                        <input type="email" class="form-control text-white bg-transparent" id="prof_email" name="email" placeholder="Email" value="{{ customer.email }}" required>
+                                        <label for="prof_email">Email Address</label>
+                                    </div>
+                                    <div class="col-12 form-floating glass-floating">
+                                        <input type="text" class="form-control text-white bg-transparent" id="prof_city" name="city" placeholder="City" value="{{ customer.city }}">
+                                        <label for="prof_city">City</label>
+                                    </div>
+                                    <div class="col-12 form-floating glass-floating">
+                                        <textarea class="form-control text-white bg-transparent" id="prof_addr" name="address" placeholder="Address" style="height: 80px;">{{ customer.address }}</textarea>
+                                        <label for="prof_addr">Delivery Address</label>
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="prof_photo" class="form-label text-secondary small mb-1">Update Profile Photo</label>
+                                        <input class="form-control bg-dark border-secondary text-white-50" type="file" id="prof_photo" name="profile_photo" accept="image/*">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary mt-3 px-4 rounded-pill">Save Profile</button>
+                            </form>
+
+                            <hr class="border-white-10 my-4">
+                            
+                            <h4 class="text-white mb-3">Security & Password</h4>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="update_password">
+                                <div class="row g-3">
+                                    <div class="col-md-6 form-floating glass-floating">
+                                        <input type="password" class="form-control text-white bg-transparent" id="old_pass" name="old_password" placeholder="Old Password" required>
+                                        <label for="old_pass">Current Password</label>
+                                    </div>
+                                    <div class="col-md-6 form-floating glass-floating">
+                                        <input type="password" class="form-control text-white bg-transparent" id="new_pass" name="new_password" placeholder="New Password" required>
+                                        <label for="new_pass">New Password</label>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-outline-primary mt-3 px-4 rounded-pill">Change Password</button>
+                            </form>
+                        </div>
+
+                        <!-- TAB 6: RESERVATIONS -->
+                        <div class="tab-pane fade" id="v-pills-reservations" role="tabpanel" aria-labelledby="v-pills-reservations-tab">
+                            <h4 class="text-white mb-3">Table Booking History</h4>
+                            <div class="table-responsive">
+                                <table class="table table-dark table-hover align-middle glass-table">
+                                    <thead>
+                                        <tr class="text-secondary border-bottom border-white-10">
+                                            <th>Guests</th>
+                                            <th>Date & Time</th>
+                                            <th>Requests</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for res in reservations %}
+                                        <tr class="border-bottom border-white-5">
+                                            <td><span class="badge bg-primary-dim text-primary">{{ res.num_guests }} Guests</span></td>
+                                            <td><strong>{{ res.reservation_date|date:"M d, Y" }}</strong> at {{ res.reservation_time|time:"H:i" }}</td>
+                                            <td><span class="small text-secondary">{{ res.special_requests|default:"None" }}</span></td>
+                                            <td>
+                                                <span class="badge {% if res.status == 'CONFIRMED' %}bg-success-dim text-success{% elif res.status == 'CANCELLED' %}bg-danger-dim text-danger{% else %}bg-warning-dim text-warning{% endif %}">
+                                                    {{ res.status }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="4" class="text-center text-secondary py-4">No table bookings made yet.</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- TAB 7: NOTIFICATIONS -->
+                        <div class="tab-pane fade" id="v-pills-notifications" role="tabpanel" aria-labelledby="v-pills-notifications-tab">
+                            <h4 class="text-white mb-3">Alerts & Offers Inbox</h4>
+                            <div class="d-flex flex-column gap-3">
+                                {% for notif in notifications %}
+                                <div class="glass-card p-3 border border-white-10 rounded-3 position-relative {% if not notif.is_read %}border-primary-dim{% endif %}" id="notif-card-{{ notif.id }}">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <h6 class="text-white mb-0">{{ notif.title }}</h6>
+                                        <span class="text-secondary small">{{ notif.created_at|date:"M d, H:i" }}</span>
+                                    </div>
+                                    <p class="text-secondary-dim small mb-0">{{ notif.message }}</p>
+                                    {% if not notif.is_read %}
+                                    <button class="btn btn-sm btn-link text-primary text-decoration-none p-0 mt-2 small" onclick="markNotificationRead({{ notif.id }})">Mark as Read</button>
+                                    {% endif %}
+                                </div>
+                                {% empty %}
+                                <div class="text-center text-secondary py-5">
+                                    <i class="bi bi-bell-slash fs-3 d-block mb-2"></i>
+                                    No alerts or notifications.
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Reorder items: sets localStorage cart values and redirects to checkout
+    function reorderItems(orderNumber) {
+        fetch(`/order/${orderNumber}/reorder/`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                localStorage.setItem('gourmet_cart', JSON.stringify(data.items));
+                window.location.href = "{% url 'core:checkout' %}";
+            } else {
+                showToast(data.message || "Failed to reorder items.", true);
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            showToast("Network error reordering items.", true);
+        });
+    }
+
+    function markNotificationRead(id) {
+        fetch(`/notifications/read/${id}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                const card = document.getElementById(`notif-card-${id}`);
+                if (card) {
+                    card.classList.remove('border-primary-dim');
+                    const btn = card.querySelector('button');
+                    if (btn) btn.remove();
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}

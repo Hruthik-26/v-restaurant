@@ -1,0 +1,100 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Book a Table | {{ settings.restaurant_name }}{% endblock %}
+
+{% block content %}
+<section class="auth-section position-relative py-5 mt-5">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-7 col-md-10 col-sm-12" data-aos="zoom-in">
+                <!-- Premium Glass Panel -->
+                <div class="glass-panel p-5 rounded-4 border border-white-10 text-center">
+                    <span class="badge bg-primary-dim text-primary border border-primary-dim px-3 py-1 mb-3 text-uppercase tracking-wider">Premium Dining</span>
+                    <h2 class="text-white fw-bold mb-2 font-playfair">Table Reservation</h2>
+                    <p class="text-secondary small mb-4">Secure your dining experience. Book table seating in seconds.</p>
+
+                    <!-- Display Messages -->
+                    {% if messages %}
+                        <div class="mb-3">
+                            {% for message in messages %}
+                                <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} bg-transparent border-white-10 text-light py-2 px-3 small rounded text-start" role="alert">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <!-- Reservation Form -->
+                    <form method="POST" class="text-start needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="row g-3">
+                            <!-- Full Name -->
+                            <div class="col-md-6 form-floating mb-2 glass-floating">
+                                <input type="text" class="form-control text-white bg-transparent" id="res_name" name="name" placeholder="John Doe" value="{{ request.user.customer.name|default:'' }}" required>
+                                <label for="res_name">Contact Name *</label>
+                            </div>
+                            
+                            <!-- Mobile Number -->
+                            <div class="col-md-6 form-floating mb-2 glass-floating">
+                                <input type="tel" class="form-control text-white bg-transparent" id="res_phone" name="phone" placeholder="+91 1234567890" value="{{ request.user.customer.phone|default:'' }}" required>
+                                <label for="res_phone">Phone Number *</label>
+                            </div>
+                            
+                            <!-- Email -->
+                            <div class="col-md-6 form-floating mb-2 glass-floating">
+                                <input type="email" class="form-control text-white bg-transparent" id="res_email" name="email" placeholder="name@example.com" value="{{ request.user.customer.email|default:'' }}" required>
+                                <label for="res_email">Email Address *</label>
+                            </div>
+                            
+                            <!-- Guests Count -->
+                            <div class="col-md-6 form-floating mb-2 glass-floating">
+                                <select class="form-select text-white bg-transparent" id="res_guests" name="num_guests" required>
+                                    <option value="1" class="bg-slate-900">1 Guest</option>
+                                    <option value="2" class="bg-slate-900" selected>2 Guests</option>
+                                    <option value="3" class="bg-slate-900">3 Guests</option>
+                                    <option value="4" class="bg-slate-900">4 Guests</option>
+                                    <option value="6" class="bg-slate-900">6 Guests</option>
+                                    <option value="8" class="bg-slate-900">8+ Guests</option>
+                                </select>
+                                <label for="res_guests">Number of Guests *</label>
+                            </div>
+                            
+                            <!-- Reservation Date -->
+                            <div class="col-md-6 form-floating mb-2 glass-floating">
+                                <input type="date" class="form-control text-white bg-transparent" id="res_date" name="reservation_date" required>
+                                <label for="res_date">Date *</label>
+                            </div>
+                            
+                            <!-- Reservation Time -->
+                            <div class="col-md-6 form-floating mb-2 glass-floating">
+                                <input type="time" class="form-control text-white bg-transparent" id="res_time" name="reservation_time" required>
+                                <label for="res_time">Time *</label>
+                            </div>
+                            
+                            <!-- Special Requests -->
+                            <div class="col-12 form-floating mb-2 glass-floating">
+                                <textarea class="form-control text-white bg-transparent" id="res_requests" name="special_requests" placeholder="Special Requests" style="height: 100px;"></textarea>
+                                <label for="res_requests">Special Requests (Optional)</label>
+                            </div>
+                        </div>
+
+                        <div class="d-grid mb-3 mt-4">
+                            <button type="submit" class="btn btn-primary py-3 rounded-pill fw-bold hover-scale shadow-glow text-uppercase tracking-wider">Book My Table</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Set minimum date to today
+    document.addEventListener("DOMContentLoaded", function() {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById("res_date").setAttribute('min', today);
+    });
+</script>
+{% endblock %}

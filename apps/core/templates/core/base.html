@@ -1,0 +1,119 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="V Restaurant - A luxury smart restaurant dining experience. Fine culinary creations and seamless digital ordering.">
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="V Restaurant - Fine Luxury Dining">
+    <meta property="og:description" content="V Restaurant - A luxury smart restaurant dining experience. Fine culinary creations and seamless digital ordering.">
+    <meta property="og:image" content="{% if settings.banner_image %}{{ settings.banner_image.url }}{% else %}/static/images/hero-banner.jpg{% endif %}">
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="V Restaurant - Fine Luxury Dining">
+    <meta property="twitter:description" content="V Restaurant - A luxury smart restaurant dining experience. Fine culinary creations and seamless digital ordering.">
+    <title>{% block title %}{{ settings.restaurant_name }}{% endblock %}</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- AOS Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Premium Custom Stylesheet -->
+    <link rel="stylesheet" href="{% static 'css/background.css' %}?v=1.5">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=1.5">
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-slate-950 text-light overflow-x-hidden">
+
+    <!-- Page Loader -->
+    <div id="loader" class="position-fixed top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center" style="z-index: 9999; background: rgba(5, 5, 5, 0.7); backdrop-filter: blur(8px); transition: opacity 0.5s ease, visibility 0.5s ease;">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <h5 class="text-primary mt-3 tracking-widest fw-light text-uppercase">V Restaurant</h5>
+    </div>
+
+    <!-- Background is managed entirely via CSS in background.css -->
+    <canvas id="falling-petals-canvas" class="position-fixed top-0 start-0 w-100 h-100" style="z-index: 2; pointer-events: none;"></canvas>
+
+    <!-- Layout Wrapper -->
+    <div class="d-flex flex-column min-vh-100">
+        {% include 'core/components/header.html' %}
+        
+        <!-- Main Content -->
+        <main class="flex-grow-1">
+            {% block content %}{% endblock %}
+        </main>
+        
+        {% include 'core/components/footer.html' %}
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
+        <div id="app-toast" class="toast align-items-center text-white border-0 glass-card" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <span id="toast-message">Notification message here</span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- GSAP & ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <!-- AOS Library -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- Custom Scripts -->
+    <script src="{% static 'js/main.js' %}?v=1.3"></script>
+    <script src="{% static 'js/cart.js' %}"></script>
+    <script src="{% static 'js/falling-petals.js' %}"></script>
+    
+    {% block extra_js %}{% endblock %}
+    
+    <script>
+        const isUserAuthenticated = {{ request.user.is_authenticated|yesno:"true,false" }};
+        
+        // Init AOS
+        AOS.init({
+            duration: 1000,
+            once: true,
+            offset: 120
+        });
+
+        // Fail-safe loader overlay removal logic
+        const hidePageLoader = () => {
+            const loader = document.getElementById('loader');
+            if (loader && loader.style.visibility !== 'hidden') {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.visibility = 'hidden';
+                    loader.style.display = 'none';
+                }, 500);
+            }
+        };
+        document.addEventListener('DOMContentLoaded', hidePageLoader);
+        window.addEventListener('load', hidePageLoader);
+        setTimeout(hidePageLoader, 1000); // 1s fallback
+    </script>
+
+    {% if messages %}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            {% for message in messages %}
+            showToast("{{ message|escapejs }}", {% if 'error' in message.tags or 'danger' in message.tags %}true{% else %}false{% endif %});
+            {% endfor %}
+        });
+    </script>
+    {% endif %}
+</body>
+</html>

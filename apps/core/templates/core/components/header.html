@@ -1,0 +1,127 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top glass-nav py-3" id="main-nav">
+    <div class="container">
+        <!-- Logo -->
+        <a class="navbar-brand d-flex flex-column align-items-start" href="{% url 'core:home' %}">
+            <span class="fs-4 fw-bold tracking-widest text-uppercase" style="color: #FFFFFF; font-family: 'Playfair Display', serif; letter-spacing: 2px;">V RESTAURANT</span>
+            <span class="text-pink-premium" style="font-size: 0.6rem; letter-spacing: 3px; text-transform: uppercase;">Fine Dining Experience</span>
+        </a>
+
+        <!-- Mobile Toggler -->
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar Links -->
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-3">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.view_name == 'core:home' %}active{% endif %}" href="{% url 'core:home' %}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.view_name == 'core:menu' %}active{% endif %}" href="{% url 'core:menu' %}">Menu</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'kitchen:dashboard' %}">Kitchen Live</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.view_name == 'core:reserve' %}active{% endif %}" href="{% url 'core:reserve' %}">Book Table</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.view_name == 'core:blog_list' or request.resolver_match.view_name == 'core:blog_detail' %}active{% endif %}" href="{% url 'core:blog_list' %}">Blog</a>
+                </li>
+                {% if request.user.is_authenticated %}
+                    {% if request.user.is_staff or request.user.is_superuser %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard:home' %}">Admin Panel</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.view_name == 'core:customer_dashboard' %}active{% endif %}" href="{% url 'core:customer_dashboard' %}">My Dashboard</a>
+                    </li>
+                    {% endif %}
+                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.view_name == 'core:contact' %}active{% endif %}" href="{% url 'core:contact' %}">Contact</a>
+                </li>
+            </ul>
+
+            <!-- Right Buttons: Cart Trigger & Auth -->
+            <div class="d-flex align-items-center gap-3">
+                {% if request.user.is_authenticated and not request.user.is_staff and not request.user.is_superuser %}
+                <a href="{% url 'core:customer_dashboard' %}#notifications" class="btn btn-icon glass-btn position-relative" title="Notifications">
+                    <i class="bi bi-bell fs-5 text-pink-premium"></i>
+                    <span class="position-absolute top-10 start-90 translate-middle p-1 bg-warning border border-light rounded-circle"></span>
+                </a>
+                {% endif %}
+                <button class="btn btn-icon glass-btn position-relative" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartDrawer" aria-controls="cartDrawer" id="cart-btn-trigger">
+                    <i class="bi bi-bag fs-5 text-pink-premium"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cart-badge-count">0</span>
+                </button>
+                
+                {% if request.user.is_authenticated %}
+                    <form action="{% if request.user.is_staff or request.user.is_superuser %}{% url 'dashboard:logout' %}{% else %}{% url 'core:logout' %}{% endif %}" method="post" class="d-inline mb-0">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-danger btn-sm px-3 rounded-pill hover-scale"><i class="bi bi-box-arrow-right me-1"></i> Logout</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'core:login' %}" class="btn btn-sm px-4 rounded-pill hover-scale btn-cta-outline-pink">Login</a>
+                    <a href="{% url 'core:register' %}" class="btn btn-sm px-4 rounded-pill hover-scale d-none d-sm-inline-block btn-cta-pink">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Offcanvas Cart Drawer -->
+<div class="offcanvas offcanvas-end bg-slate-900 border-start border-white-10 text-light glass-panel" tabindex="-1" id="cartDrawer" aria-labelledby="cartDrawerLabel" style="width: 400px; backdrop-filter: blur(20px);">
+    <div class="offcanvas-header border-bottom border-white-10 py-4">
+        <h5 class="offcanvas-title d-flex align-items-center" id="cartDrawerLabel">
+            <i class="bi bi-cart3 text-primary me-2 fs-4"></i> Your Gourmet Bag
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    
+    <div class="offcanvas-body d-flex flex-column justify-content-between p-4">
+        <!-- Cart Items List (Dynamic via JS) -->
+        <div class="cart-items-wrapper overflow-y-auto flex-grow-1 pe-2" id="drawer-cart-items">
+            <!-- Loading Skeleton or Empty Illustration (Handled by JS) -->
+        </div>
+
+        <!-- Summary & Checkout (Sticky at bottom) -->
+        <div class="cart-summary border-top border-white-10 pt-4 mt-3">
+            <!-- Promo/Coupon Code Input -->
+            <div class="input-group mb-3 glass-input-group">
+                <input type="text" class="form-control bg-transparent border-0 text-white placeholder-secondary" placeholder="Enter Coupon Code" id="coupon-input">
+                <button class="btn btn-outline-primary px-3 text-uppercase fw-semibold" type="button" id="apply-coupon-btn">Apply</button>
+            </div>
+            
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-secondary">Subtotal</span>
+                <span class="fw-semibold text-white" id="summary-subtotal">₹0.00</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-secondary">GST ({{ settings.gst_percentage }}%)</span>
+                <span class="fw-semibold text-white" id="summary-tax">₹0.00</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2 d-none" id="summary-delivery-row">
+                <span class="text-secondary">Delivery Charge</span>
+                <span class="fw-semibold text-white" id="summary-delivery">₹0.00</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2 d-none text-success" id="summary-discount-row">
+                <span class="text-success-dim">Discount</span>
+                <span class="fw-semibold" id="summary-discount">-₹0.00</span>
+            </div>
+            <hr class="border-white-10 my-3">
+            <div class="d-flex justify-content-between mb-4">
+                <span class="fs-5 fw-bold text-white">Grand Total</span>
+                <span class="fs-5 fw-bold text-primary" id="summary-total">₹0.00</span>
+            </div>
+            
+            <div class="d-grid gap-2">
+                <a href="{% url 'core:checkout' %}" class="btn btn-primary py-3 rounded-pill fw-bold hover-scale shadow-glow tracking-widest text-uppercase" id="checkout-btn">Proceed to Checkout</a>
+                <button type="button" class="btn btn-link text-secondary text-decoration-none btn-sm" id="clear-cart-btn">Clear Gourmet Bag</button>
+            </div>
+        </div>
+    </div>
+</div>

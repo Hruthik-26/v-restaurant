@@ -1,0 +1,248 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="checkout-section position-relative py-5 mt-5">
+    <div class="container py-5">
+        <div class="text-center mb-5" data-aos="fade-down">
+            <h1 class="display-5 fw-bold text-white font-playfair mb-3">Gourmet Checkout</h1>
+            <p class="text-secondary mx-auto" style="max-width: 600px;">Review your selection, select your dining option, and complete your order.</p>
+        </div>
+
+        <div class="row g-5">
+            <!-- Checkout Form -->
+            <div class="col-lg-7" data-aos="fade-right">
+                <div class="glass-panel p-5 rounded-4 border border-white-10">
+                    <h4 class="text-white mb-4"><i class="bi bi-person-fill text-primary me-2"></i>Customer Information</h4>
+                    
+                    <form method="POST" id="checkout-form" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <!-- Customer details fields -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6 form-floating mb-3 glass-floating">
+                                <input type="text" class="form-control" id="id_name" name="name" placeholder="John Doe" value="{{ customer_profile.name|default:'' }}" required>
+                                <label for="id_name">Full Name</label>
+                                <div class="invalid-feedback">Please enter your name.</div>
+                            </div>
+                            <div class="col-md-6 form-floating mb-3 glass-floating">
+                                <input type="tel" class="form-control" id="id_phone" name="phone" placeholder="1234567890" value="{{ customer_profile.phone|default:'' }}" required>
+                                <label for="id_phone">Phone Number</label>
+                                <div class="invalid-feedback">Please enter a valid phone number.</div>
+                            </div>
+                            <div class="col-12 form-floating mb-3 glass-floating">
+                                <input type="email" class="form-control" id="id_email" name="email" placeholder="name@example.com" value="{{ request.user.email|default:'' }}">
+                                <label for="id_email">Email Address</label>
+                            </div>
+                        </div>
+
+                        <!-- Dining Option Toggles -->
+                        <h4 class="text-white mb-3"><i class="bi bi-shop text-primary me-2"></i>Dining Options</h4>
+                        <div class="btn-group w-100 mb-4 glass-btn-group" role="group">
+                            <input type="radio" class="btn-check" name="dining_option" id="dine_in_radio" value="DINE_IN" checked>
+                            <label class="btn btn-outline-primary py-3 fw-bold" for="dine_in_radio">
+                                <i class="bi bi-cup-hot me-2"></i> Dine-In
+                            </label>
+
+                            <input type="radio" class="btn-check" name="dining_option" id="takeaway_radio" value="TAKE_AWAY">
+                            <label class="btn btn-outline-primary py-3 fw-bold" for="takeaway_radio">
+                                <i class="bi bi-bag-check me-2"></i> Take Away
+                            </label>
+
+                            <input type="radio" class="btn-check" name="dining_option" id="delivery_radio" value="DELIVERY">
+                            <label class="btn btn-outline-primary py-3 fw-bold" for="delivery_radio">
+                                <i class="bi bi-truck me-2"></i> Delivery
+                            </label>
+                        </div>
+
+                        <!-- Conditional fields -->
+                        <div class="mb-4" id="table-selection">
+                            <div class="form-floating glass-floating">
+                                <input type="text" class="form-control" id="id_table_number" name="table_number" placeholder="Table Number" required>
+                                <label for="id_table_number">Table Number</label>
+                                <div class="invalid-feedback">Please specify your restaurant table number.</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4 d-none" id="address-selection">
+                            {% if saved_addresses %}
+                            <div class="mb-3" id="saved-address-selector">
+                                <label class="form-label text-secondary small mb-1">Choose Saved Address</label>
+                                <select class="form-select bg-dark border-secondary text-white-50 small mb-2" id="saved-address-select" onchange="useSavedAddress(this)">
+                                    <option value="">-- Use A Saved Address --</option>
+                                    {% for addr in saved_addresses %}
+                                    <option value="{{ addr.address_line }}">{{ addr.address_line }} ({{ addr.city }})</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            {% endif %}
+                            <div class="form-floating glass-floating">
+                                <textarea class="form-control" id="id_address" name="address" placeholder="Delivery Address" style="height: 100px;">{{ customer_profile.address|default:'' }}</textarea>
+                                <label for="id_address">Delivery Address</label>
+                                <div class="invalid-feedback">Please enter your delivery address.</div>
+                            </div>
+                        </div>
+
+                        <!-- Payment Methods -->
+                        <h4 class="text-white mb-3"><i class="bi bi-credit-card text-primary me-2"></i>Payment Details</h4>
+                        <div class="row g-3 mb-5">
+                            <div class="col-md-4">
+                                <input type="radio" class="btn-check" name="payment_method" id="pay_cash" value="CASH" checked>
+                                <label class="btn btn-outline-secondary w-100 py-3 glass-payment-btn fw-bold d-flex flex-column align-items-center gap-2" for="pay_cash">
+                                    <i class="bi bi-cash-coin fs-4"></i> Cash Payment
+                                </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="radio" class="btn-check" name="payment_method" id="pay_upi" value="UPI">
+                                <label class="btn btn-outline-secondary w-100 py-3 glass-payment-btn fw-bold d-flex flex-column align-items-center gap-2" for="pay_upi">
+                                    <i class="bi bi-phone-vibrate fs-4"></i> Instant UPI
+                                </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="radio" class="btn-check" name="payment_method" id="pay_card" value="CARD">
+                                <label class="btn btn-outline-secondary w-100 py-3 glass-payment-btn fw-bold d-flex flex-column align-items-center gap-2" for="pay_card">
+                                    <i class="bi bi-credit-card-2-front fs-4"></i> Debit/Credit Card
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg py-3 rounded-pill fw-bold hover-scale shadow-glow tracking-widest text-uppercase">Place Order</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Order Summary Sidebar -->
+            <div class="col-lg-5" data-aos="fade-left">
+                <div class="glass-panel p-4 rounded-4 border border-white-10 sticky-top" style="top: 100px; z-index: 10;">
+                    <h4 class="text-white mb-4"><i class="bi bi-receipt text-primary me-2"></i>Order Summary</h4>
+                    
+                    <div class="summary-items overflow-y-auto mb-4 pe-2" style="max-height: 250px;">
+                        {% for item in cart_items %}
+                        <div class="d-flex align-items-center gap-3 mb-3 pb-3 border-bottom border-white-10">
+                            <div class="rounded overflow-hidden" style="width: 50px; height: 50px;">
+                                <img src="{{ item.image_url }}" class="w-100 h-100 object-fit-cover">
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="text-white mb-0 small">{{ item.name }}</h6>
+                                <span class="text-secondary small">{{ item.qty }} x ₹{{ item.price }}</span>
+                            </div>
+                            <span class="fw-semibold text-white small">₹{{ item.total }}</span>
+                        </div>
+                        {% empty %}
+                        <p class="text-secondary text-center py-4">Your bag is empty.</p>
+                        {% endfor %}
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-secondary small">Subtotal</span>
+                        <span class="fw-semibold text-white small">₹{{ cart_subtotal }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-secondary small">GST (5%)</span>
+                        <span class="fw-semibold text-white small">₹{{ cart_tax }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2 d-none" id="checkout-delivery-row">
+                        <span class="text-secondary small">Delivery Charge</span>
+                        <span class="fw-semibold text-white small" id="checkout-delivery-amount">₹{{ cart_delivery }}</span>
+                    </div>
+                    {% if cart_discount > 0 %}
+                    <div class="d-flex justify-content-between mb-2 text-success">
+                        <span class="small">Discount ({{ coupon_code }})</span>
+                        <span class="fw-semibold small">-₹{{ cart_discount }}</span>
+                    </div>
+                    {% endif %}
+                    <hr class="border-white-10 my-3">
+                    <div class="d-flex justify-content-between">
+                        <span class="fs-5 fw-bold text-white">Grand Total</span>
+                        <span class="fs-5 fw-bold text-primary" id="checkout-grand-total">₹{{ cart_total }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Handle conditional fields
+    const dineIn = document.getElementById('dine_in_radio');
+    const takeaway = document.getElementById('takeaway_radio');
+    const delivery = document.getElementById('delivery_radio');
+    const tableSelection = document.getElementById('table-selection');
+    const addressSelection = document.getElementById('address-selection');
+    
+    const tableInput = document.getElementById('id_table_number');
+    const addressInput = document.getElementById('id_address');
+
+    function useSavedAddress(selectEl) {
+        const val = selectEl.value;
+        if (val) {
+            document.getElementById('id_address').value = val;
+        }
+    }
+
+    function toggleFields() {
+        if (dineIn.checked) {
+            tableSelection.classList.remove('d-none');
+            addressSelection.classList.add('d-none');
+            tableInput.setAttribute('required', 'required');
+            addressInput.removeAttribute('required');
+            document.getElementById('checkout-delivery-row').classList.add('d-none');
+            recalcTotal(false);
+        } else if (takeaway.checked) {
+            tableSelection.classList.add('d-none');
+            addressSelection.classList.add('d-none');
+            tableInput.removeAttribute('required');
+            addressInput.removeAttribute('required');
+            document.getElementById('checkout-delivery-row').classList.add('d-none');
+            recalcTotal(false);
+        } else if (delivery.checked) {
+            tableSelection.classList.add('d-none');
+            addressSelection.classList.remove('d-none');
+            tableInput.removeAttribute('required');
+            addressInput.setAttribute('required', 'required');
+            document.getElementById('checkout-delivery-row').classList.remove('d-none');
+            recalcTotal(true);
+        }
+    }
+
+    function recalcTotal(addDelivery) {
+        const subtotal = parseFloat("{{ cart_subtotal|default:0.0 }}");
+        const tax = parseFloat("{{ cart_tax|default:0.0 }}");
+        const discount = parseFloat("{{ cart_discount|default:0.0 }}");
+        let delivery_charge = parseFloat("{{ cart_delivery|default:0.0 }}");
+        
+        if (!addDelivery) {
+            delivery_charge = 0.0;
+        }
+
+        const total = Math.max(0.00, subtotal + tax + delivery_charge - discount);
+        document.getElementById('checkout-grand-total').textContent = `₹${total.toFixed(2)}`;
+    }
+
+    dineIn.addEventListener('change', toggleFields);
+    takeaway.addEventListener('change', toggleFields);
+    delivery.addEventListener('change', toggleFields);
+
+    // Bootstrap Form Validation
+    (() => {
+        'use strict'
+        const forms = document.querySelectorAll('.needs-validation')
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                } else {
+                    // Empty LocalStorage cart upon submission
+                    localStorage.removeItem('gourmet_cart');
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+</script>
+{% endblock %}

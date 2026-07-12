@@ -1,0 +1,98 @@
+{% for item in menu_items %}
+<div class="col-12 col-md-6 col-lg-4 menu-item-card-col mb-4 d-flex align-items-stretch">
+  <div class="menu-food-card d-flex flex-column justify-content-between w-100"
+       data-item-id="{{ item.id }}"
+       data-category="{{ item.category.slug }}"
+       data-veg="{{ item.is_veg|lower }}"
+       data-name="{{ item.name|lower }}"
+       data-available="{{ item.is_available|lower }}"
+       data-meat="{{ item.name|lower }}"
+       data-rating="{{ item.rating }}"
+       data-price="{{ item.price }}">
+
+    <!-- Top Section -->
+    <div class="mfc-top-section">
+      <div class="mfc-badges-left">
+        {% if item.is_veg %}
+          <span class="mfc-badge mfc-badge--veg">
+            <span class="mfc-badge-dot"></span> VEG
+          </span>
+        {% else %}
+          <span class="mfc-badge mfc-badge--nonveg">
+            <span class="mfc-badge-dot"></span> NON-VEG
+          </span>
+        {% endif %}
+
+        {% if item.is_spicy %}
+          <span class="mfc-badge mfc-badge--spicy">
+            <i class="bi bi-fire"></i> SPICY
+          </span>
+        {% endif %}
+      </div>
+
+      <div class="mfc-top-right">
+        <span class="mfc-rating">
+          <i class="bi bi-star-fill text-warning"></i> {{ item.rating }}
+        </span>
+        <button class="mfc-fav-btn favorite-toggle-btn-grid {% if item.id in fav_ids %}active{% endif %}"
+                data-item-id="{{ item.id }}"
+                onclick="event.preventDefault(); toggleFavorite('{{ item.id }}', this)"
+                title="Favourite">
+          <i class="bi {% if item.id in fav_ids %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Middle Section -->
+    <div class="mfc-middle-section">
+      <h5 class="mfc-title" title="{{ item.name }}">{{ item.name }}</h5>
+
+      <div class="mfc-details-box">
+        <div class="mfc-detail-row">
+          <span class="mfc-detail-label"><i class="bi bi-geo-alt-fill"></i> Origin</span>
+          <span class="mfc-detail-value">{{ item.origin|default:"—" }}</span>
+        </div>
+        <div class="mfc-detail-row">
+          <span class="mfc-detail-label"><i class="bi bi-pin-map-fill"></i> District</span>
+          <span class="mfc-detail-value">{{ item.district|default:"—" }}</span>
+        </div>
+        <div class="mfc-detail-row">
+          <span class="mfc-detail-label"><i class="bi bi-map-fill"></i> State</span>
+          <span class="mfc-detail-value">{{ item.state|default:"—" }}</span>
+        </div>
+        <div class="mfc-detail-row">
+          <span class="mfc-detail-label"><i class="bi bi-lightning-charge-fill"></i> Calories</span>
+          <span class="mfc-detail-value">{% if item.calories %}{{ item.calories }} kcal{% else %}—{% endif %}</span>
+        </div>
+        <div class="mfc-detail-row">
+          <span class="mfc-detail-label"><i class="bi bi-info-circle-fill"></i> Availability</span>
+          <span class="mfc-detail-value {% if item.is_available %}text-success-custom{% else %}text-danger-custom{% endif %}">
+            {% if item.is_available %}Available{% else %}Sold Out{% endif %}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Section -->
+    <div class="mfc-bottom-section">
+      <span class="mfc-price">₹{{ item.price }}</span>
+      {% if item.is_available %}
+        <button class="mfc-cart-btn add-to-cart-btn"
+                onclick="cart.add('{{ item.id }}', '{{ item.name }}', {{ item.price }}, '', {{ item.is_veg|lower }})">
+          <i class="bi bi-plus-lg"></i> Add to Cart
+        </button>
+      {% else %}
+        <button class="mfc-cart-btn mfc-cart-btn--disabled" disabled>
+          Sold Out
+        </button>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+{% empty %}
+<div class="col-12 text-center py-5 text-secondary">
+  <i class="bi bi-bowl-hot fs-2 d-block mb-3" style="opacity: 0.4;"></i>
+  <p class="mb-0 small">No dishes match your active filters.</p>
+</div>
+{% endfor %}

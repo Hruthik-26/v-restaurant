@@ -1,0 +1,20 @@
+# Django local files
+.env
+db.sqlite3
+staticfiles/
+media/
+
+# Virtual Environment
+venv/
+ENV/
+env/
+
+# Python compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# OS specific files
+.DS_Store
+Thumbs.db

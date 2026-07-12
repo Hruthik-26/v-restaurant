@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Delete | V Restaurant</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="bg-slate-950 text-light overflow-x-hidden">
+    <div class="container min-vh-100 d-flex align-items-center justify-content-center">
+        <div class="glass-panel p-5 rounded-4 border border-white-10 text-center" style="max-width: 500px;">
+            <h3 class="text-danger mb-4">Are you absolutely sure?</h3>
+            <p class="text-secondary mb-5">You are about to delete the gourmet dish <strong>{{ object.name }}</strong>. This action is irreversible.</p>
+            <form method="POST" class="d-flex gap-3 justify-content-center">
+                {% csrf_token %}
+                <a href="{% url 'dashboard:menu_list' %}" class="btn btn-outline-secondary px-4 py-2">Cancel</a>
+                <button type="submit" class="btn btn-danger px-4 py-2">Confirm Delete</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

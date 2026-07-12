@@ -1,0 +1,72 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Register | {{ settings.restaurant_name }}{% endblock %}
+
+{% block content %}
+<section class="auth-section position-relative py-5 mt-5">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-10 col-sm-12" data-aos="zoom-in">
+                <!-- Outer Glass Panel -->
+                <div class="glass-panel p-5 rounded-4 border border-white-10 text-center">
+                    <h2 class="text-white fw-bold mb-2 font-playfair">Gourmet Membership</h2>
+                    <p class="text-secondary small mb-4">Create your account before placing your gourmet order.</p>
+
+                    <!-- Display Messages -->
+                    {% if messages %}
+                        <div class="mb-3">
+                            {% for message in messages %}
+                                <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} bg-transparent border-white-10 text-light py-2 px-3 small rounded text-start" role="alert">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <!-- Registration Form -->
+                    <form method="POST" enctype="multipart/form-data" class="text-start needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="row g-3">
+                            <!-- Full Name -->
+                            <div class="col-md-6 form-floating mb-2 glass-floating">
+                                <input type="text" class="form-control text-white bg-transparent" id="reg_name" name="name" placeholder="John Doe" value="{{ form_data.name|default:'' }}" required>
+                                <label for="reg_name">Full Name</label>
+                            </div>
+                            
+                            <!-- Mobile Number -->
+                            <div class="col-md-6 form-floating mb-2 glass-floating">
+                                <input type="tel" class="form-control text-white bg-transparent" id="reg_phone" name="phone" placeholder="+91 1234567890" value="{{ form_data.phone|default:'' }}" required>
+                                <label for="reg_phone">Mobile Number</label>
+                            </div>
+                            
+                            <!-- Email -->
+                            <div class="col-12 form-floating mb-2 glass-floating">
+                                <input type="email" class="form-control text-white bg-transparent" id="reg_email" name="email" placeholder="name@example.com" value="{{ form_data.email|default:'' }}" required>
+                                <label for="reg_email">Email Address</label>
+                            </div>
+                            
+                            <!-- Password -->
+                            <div class="col-md-6 form-floating mb-2 glass-floating">
+                                <input type="password" class="form-control text-white bg-transparent" id="reg_password" name="password" placeholder="Password" required>
+                                <label for="reg_password">Password</label>
+                            </div>
+                            
+                            <!-- Confirm Password -->
+                            <div class="col-md-6 form-floating mb-2 glass-floating">
+                                <input type="password" class="form-control text-white bg-transparent" id="reg_confirm_password" name="confirm_password" placeholder="Confirm Password" required>
+                                <label for="reg_confirm_password">Confirm Password</label>
+                        </div>
+
+                        <div class="d-grid mb-3 mt-4">
+                            <button type="submit" class="btn btn-primary py-3 rounded-pill fw-bold hover-scale shadow-glow text-uppercase tracking-wider">Register Account</button>
+                        </div>
+                        <p class="text-secondary text-center small mb-0">Already registered? <a href="{% url 'core:login' %}" class="text-primary fw-semibold text-hover-underline">Sign In</a></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

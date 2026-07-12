@@ -1,0 +1,284 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section position-relative min-vh-100 d-flex align-items-center overflow-hidden pt-5">
+    <div class="container py-5">
+        <div class="row align-items-center g-5">
+            <!-- Hero Text -->
+            <div class="col-lg-6 text-center text-lg-start" data-aos="fade-right">
+                <div class="d-flex align-items-center justify-content-center justify-content-lg-start mb-4" style="gap: 15px;">
+                    <span style="color: #FFD166; font-size: 0.8rem;">&#10022;</span>
+                    <span class="text-uppercase tracking-widest" style="font-size: 0.75rem; color: #b0b0b0; letter-spacing: 3px;">Michelin Quality Dining</span>
+                    <span style="color: #FFD166; font-size: 0.8rem;">&#10022;</span>
+                </div>
+                <h1 class="fw-bold mb-3 font-playfair" style="font-size: 5rem; line-height: 1.1;">
+                    <span style="color: #FFFFFF;">Authentic</span><br>
+                    <span class="text-pink-premium">Telugu Cuisine</span>
+                </h1>
+                <div class="d-flex align-items-center justify-content-center justify-content-lg-start mb-4" style="gap: 10px;">
+                    <div style="width: 80px; height: 1px; background: linear-gradient(90deg, transparent, #FF2D7A);"></div>
+                    <span class="neon-heart" style="font-size: 1rem;">♥</span>
+                    <div style="width: 80px; height: 1px; background: linear-gradient(90deg, #FF2D7A, transparent);"></div>
+                </div>
+                <p class="text-secondary mb-5 pe-lg-5" style="font-size: 0.95rem; line-height: 1.8; color: #a0a0a0 !important;">Experience premium dining with traditional flavours. Indulge in a premium, glassmorphic experience where you can browse culinary creations, track preparation steps live, and experience fine dining reinvented.</p>
+                <div class="d-flex flex-wrap justify-content-center justify-content-lg-start gap-3">
+                    <a href="{% url 'core:menu' %}" class="btn rounded-pill fw-semibold hover-scale btn-cta-pink" style="padding: 12px 25px;"><span style="margin-right: 8px;">🛎️</span> Explore Menu</a>
+                    <a href="{% url 'core:reserve' %}" class="btn rounded-pill fw-semibold hover-scale btn-cta-gold" style="padding: 12px 25px;"><span style="margin-right: 8px;">📅</span> Reserve Table</a>
+                    <a href="{% url 'core:menu' %}" class="btn rounded-pill fw-semibold hover-scale btn-cta-pink" style="padding: 12px 25px;"><span style="margin-right: 8px;">🍴</span> Order Now</a>
+                </div>
+            </div>
+            
+            <!-- Hero Ambient Showcase Card -->
+            <div class="col-lg-6 position-relative d-flex justify-content-center align-items-center mt-5 mt-lg-0" data-aos="zoom-in" data-aos-delay="200">
+                <div class="rounded-5 p-5 d-flex flex-column align-items-center justify-content-center text-center kitchen-card-premium" style="width: 440px; min-height: 480px; backdrop-filter: blur(25px); position: relative; z-index: 2;">
+                    
+                    <div class="mb-5 d-flex align-items-center justify-content-center" style="width: 70px; height: 70px; border-radius: 50%; border: 1px solid rgba(255, 45, 122, 0.3); box-shadow: 0 0 20px rgba(255, 45, 122, 0.15);">
+                        <i class="bi bi-clock text-white fs-3 text-pink-premium" style="text-shadow: 0 0 10px rgba(255, 45, 122, 0.5);"></i>
+                    </div>
+                    
+                    <h3 class="font-playfair text-white mb-4" style="font-size: 1.8rem; letter-spacing: 0.5px;">Kitchen Live Timeline</h3>
+                    <p class="text-secondary small mb-5" style="line-height: 1.8; color: #a0a0a0 !important;">Watch your dishes prepared live with smart kitchen tracking. Modern transparency for refined dining.</p>
+                    
+                    <a href="{% url 'kitchen:dashboard' %}" class="btn px-4 py-2 rounded-pill hover-scale btn-cta-outline-pink" style="font-size: 0.9rem; display: flex; align-items: center; gap: 10px;">
+                        <i class="bi bi-broadcast"></i> Launch Live Screen
+                    </a>
+                </div>
+                
+                <!-- Mini Floating badges -->
+                <div class="position-absolute rounded-pill px-3 py-2 d-flex align-items-center gap-2" style="top: 8%; right: -2%; z-index: 3; background: #050505; border: 1px solid rgba(255, 209, 102, 0.3); box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <span class="text-white" style="font-size: 0.75rem;">5.0 Gastronomy Rating</span>
+                </div>
+                
+                <div class="position-absolute rounded-pill px-3 py-2 d-flex align-items-center gap-2" style="bottom: 8%; left: 0%; z-index: 3; background: #050505; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+                    <i class="bi bi-fire" style="color: #FFD166;"></i>
+                    <span class="text-white" style="font-size: 0.75rem;">Woodfired Delicacies</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Restaurant Statistics Section -->
+<section class="py-5 bg-gradient-dark border-top border-bottom border-white-10 position-relative">
+    <div class="container py-4">
+        <div class="row g-4 text-center">
+            <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="100">
+                <div class="p-3">
+                    <h2 class="display-5 fw-bold text-gradient mb-2 counter" data-target="9400">0</h2>
+                    <p class="text-secondary text-uppercase tracking-wider small">Happy Customers</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="200">
+                <div class="p-3">
+                    <h2 class="display-5 fw-bold text-gradient mb-2 counter" data-target="180">0</h2>
+                    <p class="text-secondary text-uppercase tracking-wider small">Today's Orders</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="300">
+                <div class="p-3">
+                    <h2 class="display-5 fw-bold text-gradient mb-2 counter" data-target="24">0</h2>
+                    <p class="text-secondary text-uppercase tracking-wider small">Gourmet Awards</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="400">
+                <div class="p-3">
+                    <h2 class="display-5 fw-bold text-gradient mb-2 counter" data-target="32">0</h2>
+                    <p class="text-secondary text-uppercase tracking-wider small">Signature Dishes</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Categories Selection Carousel -->
+<section class="py-5">
+    <div class="container py-5">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h2 class="display-5 fw-bold text-white font-playfair mb-3">Explore Categories</h2>
+            <p class="text-secondary mx-auto" style="max-width: 600px;">Crafted by world-class chefs, our categories represent years of recipe refinement.</p>
+        </div>
+        <div class="row g-4 justify-content-center">
+            {% for cat in categories %}
+            <div class="col-lg-3 col-md-6 col-sm-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter|default:1 }}00">
+                <a href="{% url 'core:menu' %}?category={{ cat.slug }}" class="text-decoration-none">
+                    <div class="category-card p-4 rounded-4 text-center glass-card hover-lift border border-white-10 h-100 d-flex flex-column align-items-center justify-content-center">
+                        <div class="icon-circle bg-primary-dim p-3 rounded-circle text-primary mb-3">
+                            <i class="bi {{ cat.icon }} fs-3"></i>
+                        </div>
+                        <h5 class="text-white mb-2">{{ cat.name }}</h5>
+                        <p class="text-secondary small mb-0">{{ cat.description }}</p>
+                    </div>
+                </a>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center text-secondary py-4">No categories registered yet.</div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Offers & Promotions banner -->
+<section class="py-5 position-relative">
+    <div class="container">
+        <div class="glass-panel p-5 rounded-5 border border-white-10 overflow-hidden position-relative" data-aos="zoom-in" style="background: linear-gradient(135deg, rgba(255, 107, 53, 0.1) 0%, rgba(15, 23, 42, 0.8) 100%);">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-8">
+                    <span class="badge bg-danger px-3 py-2 rounded-pill text-white text-uppercase tracking-wider mb-3">Limited Offer</span>
+                    <h2 class="display-4 fw-bold text-white font-playfair mb-3">Chef's Special Tasting Menu</h2>
+                    <p class="lead text-secondary mb-4 pe-lg-4">Use coupon code <strong class="text-primary">WELCOME15</strong> to receive a 15% discount on all courses ordered via our smart dashboard today.</p>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="timer-box bg-slate-900-50 px-3 py-2 rounded-3 border border-white-10 text-center" style="min-width: 60px;">
+                            <span class="d-block fw-bold text-primary fs-5" id="hours">04</span>
+                            <span class="text-secondary small text-uppercase">Hrs</span>
+                        </div>
+                        <div class="timer-box bg-slate-900-50 px-3 py-2 rounded-3 border border-white-10 text-center" style="min-width: 60px;">
+                            <span class="d-block fw-bold text-primary fs-5" id="minutes">12</span>
+                            <span class="text-secondary small text-uppercase">Min</span>
+                        </div>
+                        <div class="timer-box bg-slate-900-50 px-3 py-2 rounded-3 border border-white-10 text-center" style="min-width: 60px;">
+                            <span class="d-block fw-bold text-primary fs-5" id="seconds">55</span>
+                            <span class="text-secondary small text-uppercase">Sec</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 text-center text-lg-end">
+                    <a href="{% url 'core:menu' %}" class="btn btn-primary btn-lg px-5 py-3 rounded-pill fw-bold hover-scale shadow-glow">Claim Coupon</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Chef Showcase Section -->
+<section class="py-5 bg-gradient-dark">
+    <div class="container py-5">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h2 class="display-5 fw-bold text-white font-playfair mb-3">Our Culinary Masters</h2>
+            <p class="text-secondary mx-auto" style="max-width: 600px;">Led by Chef de Cuisine Jean-Luc, V Restaurant brings Michelin star standards to digital dining.</p>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                <div class="chef-card glass-card rounded-4 overflow-hidden border border-white-10 hover-lift h-100">
+                    <div class="position-relative overflow-hidden" style="height: 320px;">
+                        <div class="bg-secondary-dim w-100 h-100 d-flex align-items-center justify-content-center text-secondary">
+                            <!-- Premium chef visual placeholder with generate_image output styled -->
+                            <i class="bi bi-person-circle fs-1"></i>
+                        </div>
+                    </div>
+                    <div class="p-4 text-center">
+                        <h5 class="text-white mb-1">Jean-Luc Moreau</h5>
+                        <p class="text-primary small text-uppercase tracking-wider mb-3">Executive Chef</p>
+                        <p class="text-secondary small mb-0">Trained under Paris' top Michelin establishments, Jean-Luc translates classic French recipes into modern art.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="chef-card glass-card rounded-4 overflow-hidden border border-white-10 hover-lift h-100">
+                    <div class="position-relative overflow-hidden" style="height: 320px;">
+                        <div class="bg-secondary-dim w-100 h-100 d-flex align-items-center justify-content-center text-secondary">
+                            <i class="bi bi-person-circle fs-1"></i>
+                        </div>
+                    </div>
+                    <div class="p-4 text-center">
+                        <h5 class="text-white mb-1">Elena Rostova</h5>
+                        <p class="text-primary small text-uppercase tracking-wider mb-3">Head Pastry Chef</p>
+                        <p class="text-secondary small mb-0">Award-winning dessert architect specializing in molecular gastronomy pastries and structural ice creams.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-5">
+    <div class="container py-5">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h2 class="display-5 fw-bold text-white font-playfair mb-3">Critic Reviews</h2>
+            <p class="text-secondary mx-auto" style="max-width: 600px;">Read evaluations from reputable food columnists and everyday gourmands.</p>
+        </div>
+        <div class="row g-4 justify-content-center">
+            {% for t in testimonials %}
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter }}00">
+                <div class="testimonial-card glass-card p-4 rounded-4 border border-white-10 hover-lift h-100 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex text-warning mb-3">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill ms-1"></i>
+                            <i class="bi bi-star-fill ms-1"></i>
+                            <i class="bi bi-star-fill ms-1"></i>
+                            <i class="bi bi-star-fill ms-1"></i>
+                        </div>
+                        <p class="text-secondary fs-6 fst-italic mb-4">"{{ t.comment }}"</p>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold me-3" style="width: 45px; height: 45px;">
+                            {{ t.name|slice:":1" }}
+                        </div>
+                        <div>
+                            <h6 class="text-white mb-0">{{ t.name }}</h6>
+                            <span class="text-secondary small">{{ t.role }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Accordion Section -->
+<section class="py-5 bg-gradient-dark">
+    <div class="container py-5">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h2 class="display-5 fw-bold text-white font-playfair mb-3">Frequently Asked Questions</h2>
+            <p class="text-secondary mx-auto" style="max-width: 600px;">Everything you need to know about our modern contactless dining process.</p>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-8" data-aos="fade-up">
+                <div class="accordion accordion-flush glass-accordion" id="faqAccordion">
+                    <div class="accordion-item bg-transparent border-bottom border-white-10 py-3">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button bg-transparent text-white border-0 fw-semibold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                How does the real-time order tracking work?
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-secondary">
+                                After checking out, you'll receive a unique tracking link containing a live timeline. The kitchen dashboard updates orders instantly. You can watch your dish transition from Preparing, Cooking, Packing, to Ready in real-time.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item bg-transparent border-bottom border-white-10 py-3">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button bg-transparent text-white border-0 fw-semibold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                Can I order directly to my table inside the restaurant?
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-secondary">
+                                Yes! During checkout, select the "Dine-In" option and input your designated table number. The waitstaff will deliver your meal as soon as the kitchen updates the status to "Ready".
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item bg-transparent border-bottom border-white-10 py-3">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button bg-transparent text-white border-0 fw-semibold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                What payment methods do you support?
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-secondary">
+                                We support instant contactless card payments, secure UPI gateways, and Cash on Delivery / Dine-in payment directly to the counter.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

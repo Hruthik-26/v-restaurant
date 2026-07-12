@@ -1,0 +1,98 @@
+{% load static %}
+<footer class="footer bg-slate-950 border-top border-white-10 pt-5 pb-4 mt-auto">
+    <div class="container">
+        <div class="row g-4 mb-5">
+            <!-- Restaurant Branding & News -->
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                <span class="fs-4 fw-bold tracking-widest text-uppercase text-gradient d-block mb-3">{{ settings.restaurant_name }}</span>
+                <p class="text-secondary mb-4 pe-lg-4">{{ settings.description }}</p>
+                <h6 class="text-white text-uppercase tracking-widest mb-3" style="font-size: 0.8rem;">Gourmet Newsletter
+                </h6>
+                <form id="newsletter-form" class="input-group glass-input-group" style="max-width: 300px;">
+                    {% csrf_token %}
+                    <input type="email" class="form-control bg-transparent border-0 text-white placeholder-secondary"
+                        placeholder="Your Email Address" id="newsletter-email" required>
+                    <button class="btn btn-outline-primary" type="submit"><i class="bi bi-send-fill"></i></button>
+                </form>
+            </div>
+
+            <!-- Quick Navigation Links -->
+            <div class="col-lg-2 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                <h6 class="text-white text-uppercase tracking-widest mb-4" style="font-size: 0.8rem;">Navigation</h6>
+                <ul class="list-unstyled gap-2 d-flex flex-column">
+                    <li><a href="{% url 'core:home' %}"
+                            class="text-secondary text-decoration-none text-hover-white">Home</a></li>
+                    <li><a href="{% url 'core:menu' %}"
+                            class="text-secondary text-decoration-none text-hover-white">Menu</a></li>
+                    <li><a href="{% url 'kitchen:dashboard' %}"
+                            class="text-secondary text-decoration-none text-hover-white">Kitchen Live</a></li>
+                    <li><a href="{% url 'dashboard:home' %}"
+                            class="text-secondary text-decoration-none text-hover-white">Custom Admin</a></li>
+                </ul>
+            </div>
+
+            <!-- Opening hours & Details -->
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                <h6 class="text-white text-uppercase tracking-widest mb-4" style="font-size: 0.8rem;">Restaurant Hours
+                </h6>
+                <ul class="list-unstyled text-secondary gap-2 d-flex flex-column">
+                    <li class="d-flex flex-column mb-2">
+                        <span class="text-white small fw-bold">Opening Hours:</span>
+                        <span class="text-secondary small">{{ settings.opening_hours }}</span>
+                    </li>
+                    <li class="d-flex flex-column">
+                        <span class="text-primary small fw-bold">Happy Hours:</span>
+                        <span class="text-secondary small">{{ settings.happy_hours }}</span>
+                    </li>
+                </ul>
+                <div class="mt-4">
+                    <p class="mb-2 text-secondary">
+                        <span class="text-white small fw-bold d-block">Phone</span>
+                        {{ settings.contact_phone }}
+                    </p>
+                    <p class="mb-0 text-secondary">
+                        <span class="text-white small fw-bold d-block">Email</span>
+                        {{ settings.contact_email }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Location Map Mock -->
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="400">
+                <h6 class="text-white text-uppercase tracking-widest mb-4" style="font-size: 0.8rem;">Our Location</h6>
+                <div class="ratio ratio-16x9 rounded overflow-hidden border border-white-10 glass-card">
+                    <iframe src="{{ settings.google_maps_url }}" style="border:0;" allowfullscreen="" loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+                <div class="mt-3 text-secondary small">
+                    <span class="text-white small fw-bold d-block mb-1"><i class="bi bi-geo-alt-fill text-primary me-1"></i>Address</span>
+                    Tiruvuru,<br>
+                    NTR District,<br>
+                    Andhra Pradesh
+                </div>
+            </div>
+        </div>
+
+        <hr class="border-white-10 my-4">
+
+        <div class="row align-items-center">
+            <div class="col-md-6 text-center text-md-start">
+                <p class="mb-0 text-secondary small">&copy; {% now "Y" %} {{ settings.footer_copyright }}</p>
+            </div>
+            <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
+                <div class="d-flex justify-content-center justify-content-md-end gap-3">
+                    {% if settings.instagram %}
+                    <a href="{{ settings.instagram }}" target="_blank" class="text-secondary text-hover-white"><i class="bi bi-instagram"></i></a>
+                    {% endif %}
+                    {% if settings.facebook %}
+                    <a href="{{ settings.facebook }}" target="_blank" class="text-secondary text-hover-white"><i class="bi bi-facebook"></i></a>
+                    {% endif %}
+                    {% if settings.whatsapp_number %}
+                    <a href="https://wa.me/{{ settings.whatsapp_number }}" target="_blank" class="text-secondary text-hover-white"><i class="bi bi-whatsapp"></i></a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
