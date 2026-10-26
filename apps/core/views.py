@@ -3,6 +3,7 @@ import uuid
 from decimal import Decimal
 from io import BytesIO
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
