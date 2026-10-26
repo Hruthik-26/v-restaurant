@@ -1,36 +1,52 @@
 /* ============================================================
-   V Restaurant - Romantic High-Quality Border & Background System
+   L'Étoile Bistro — White Background System v2.0
    ============================================================ */
 
-/* Base Body tweaks to set the image background */
+/* Base Body — clean white, no image */
 body {
-    background-color: #050505 !important;
-    background-image: url('../images/bg_exact.png') !important;
-    background-size: cover !important;
-    background-position: center bottom !important;
-    background-repeat: no-repeat !important;
-    background-attachment: fixed !important;
+    background-color: #F8FAFC !important;
+    background-image: none !important;
+    background-attachment: initial !important;
     position: relative;
     overflow-x: hidden;
 }
 
-/* Base layout wrapper sits above the decorations */
+/* Subtle decorative top-of-page gradient strip */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #C6A15B, #D4B87A, #C6A15B);
+    z-index: 9999;
+    pointer-events: none;
+}
+
+/* Layout wrapper */
 .d-flex.flex-column.min-vh-100 {
     position: relative;
     z-index: 10;
 }
 
+/* Disable the falling-petals canvas — not needed on white theme */
+#falling-petals-canvas {
+    display: none !important;
+}
 
+/* Prevent any Three.js canvas from showing dark backgrounds */
+canvas:not(#falling-petals-canvas):not([id$="Chart"]) {
+    display: none !important;
+}
 
 @keyframes candle-flicker {
     0%, 100% { opacity: 0.85; }
-    30% { opacity: 0.95; }
-    35% { opacity: 0.88; }
-    70% { opacity: 1.0; }
-    85% { opacity: 0.92; }
+    30%  { opacity: 0.95; }
+    35%  { opacity: 0.88; }
+    70%  { opacity: 1.0; }
+    85%  { opacity: 0.92; }
 }
 
 @keyframes heart-glow {
     0%, 100% { opacity: 0.6; }
-    50% { opacity: 1.0; }
+    50%       { opacity: 1.0; }
 }

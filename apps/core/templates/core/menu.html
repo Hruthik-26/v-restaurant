@@ -4,8 +4,8 @@
 {% block content %}
 <section class="menu-header-section position-relative" style="padding-top: 115px; padding-bottom: 0;">
     <div class="container text-center" data-aos="fade-down">
-        <h1 class="display-4 fw-bold text-white font-playfair" style="margin-bottom: 24px;">Our Culinary Catalog</h1>
-        <p class="text-secondary mx-auto" style="max-width: 600px; margin-bottom: 40px;">Indulge in fresh flavors sourced responsibly and served with aesthetic sophistication.</p>
+        <h1 class="display-4 fw-bold font-playfair" style="margin-bottom: 24px; color: #172554;">Our Culinary Catalog</h1>
+        <p style="max-width: 600px; margin: 0 auto 40px; color: #4B5563;">Indulge in fresh flavors sourced responsibly and served with aesthetic sophistication.</p>
     </div>
 </section>
 
@@ -15,44 +15,44 @@
         <div class="row g-4">
             <!-- Filter Sidebar -->
             <div class="col-lg-3" data-aos="fade-right">
-                <div class="glass-panel p-4 rounded-4 border border-white-10 menu-sidebar-scrollable">
+                <div class="glass-panel p-4 rounded-4 menu-sidebar-scrollable" style="border: 1px solid #E5E7EB;">
                     <!-- Search Bar -->
-                    <h5 class="text-white mb-3">Search</h5>
-                    <div class="input-group glass-input-group mb-4">
-                        <span class="input-group-text bg-transparent border-0"><i class="bi bi-search text-secondary"></i></span>
-                        <input type="text" class="form-control bg-transparent border-0 text-white placeholder-secondary" placeholder="Type to search..." id="search-input">
+                    <h5 class="mb-3" style="color: #172554;">Search</h5>
+                    <div class="input-group glass-input-group mb-4" style="border: 1.5px solid #D1D5DB; background: #FFFFFF;">
+                        <span class="input-group-text bg-transparent border-0"><i class="bi bi-search" style="color: #4B5563;"></i></span>
+                        <input type="text" class="form-control bg-transparent border-0" placeholder="Type to search..." id="search-input" style="color: #374151;">
                     </div>
 
                     <!-- Categories list -->
-                    <h5 class="text-white mb-3">Categories</h5>
+                    <h5 class="mb-3" style="color: #172554;">Categories</h5>
                     <div class="d-flex flex-column gap-2 mb-4" id="category-filter-list">
                         <button class="btn btn-sm glass-btn text-start active px-3 py-2 w-100 category-btn" data-category="">
-                            <i class="bi bi-grid-fill me-2 text-primary"></i> All Items
+                            <i class="bi bi-grid-fill me-2" style="color: #1D4ED8;"></i> All Items
                         </button>
                         {% for cat in categories %}
                         <button class="btn btn-sm glass-btn text-start px-3 py-2 w-100 category-btn" data-category="{{ cat.slug }}">
-                            <i class="bi {{ cat.icon }} me-2 text-primary"></i> {{ cat.name }}
+                            <i class="bi {{ cat.icon }} me-2" style="color: #1D4ED8;"></i> {{ cat.name }}
                         </button>
                         {% endfor %}
                     </div>
 
                     <!-- Dietary switches -->
-                    <h5 class="text-white mb-3">Dietary Prefs</h5>
+                    <h5 class="mb-3" style="color: #172554;">Dietary Prefs</h5>
                     <div class="form-check form-switch mb-2">
                         <input class="form-check-input" type="checkbox" role="switch" id="veg-switch">
-                        <label class="form-check-label text-secondary small" for="veg-switch">Vegetarian</label>
+                        <label class="form-check-label small" for="veg-switch" style="color: #4B5563;">Vegetarian</label>
                     </div>
                     <div class="form-check form-switch mb-2">
                         <input class="form-check-input" type="checkbox" role="switch" id="non-veg-switch">
-                        <label class="form-check-label text-secondary small" for="non-veg-switch">Non-Vegetarian</label>
+                        <label class="form-check-label small" for="non-veg-switch" style="color: #4B5563;">Non-Vegetarian</label>
                     </div>
                     <div class="form-check form-switch mb-4">
                         <input class="form-check-input" type="checkbox" role="switch" id="available-switch" checked>
-                        <label class="form-check-label text-secondary small" for="available-switch">Available Only</label>
+                        <label class="form-check-label small" for="available-switch" style="color: #4B5563;">Available Only</label>
                     </div>
 
                     <!-- Meat type filter buttons -->
-                    <h5 class="text-white mb-3">Meat Options</h5>
+                    <h5 class="mb-3" style="color: #172554;">Meat Options</h5>
                     <div class="d-flex flex-wrap gap-2 mb-4" id="meat-filter-list">
                         <button class="btn btn-sm glass-btn px-3 py-2 active meat-btn" data-meat="">All</button>
                         <button class="btn btn-sm glass-btn px-3 py-2 meat-btn" data-meat="chicken">Chicken</button>
@@ -62,8 +62,8 @@
                     </div>
 
                     <!-- Sorting -->
-                    <h5 class="text-white mb-3">Sort By</h5>
-                    <select class="form-select bg-dark border-secondary text-white-50" id="sort-select">
+                    <h5 class="mb-3" style="color: #172554;">Sort By</h5>
+                    <select class="form-select" id="sort-select" style="background: #FFFFFF; color: #374151; border: 1.5px solid #D1D5DB;">
                         <option value="">Default (Newest)</option>
                         <option value="price_asc">Price: Low → High</option>
                         <option value="price_desc">Price: High → Low</option>
@@ -97,11 +97,11 @@
 </section>
 
 <!-- Item Quick View Modal -->
-<div class="modal fade glass-modal" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel" aria-hidden="true">
+<div class="modal fade" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content bg-slate-900 border border-white-10 text-white rounded-5 p-3" style="backdrop-filter: blur(30px);">
+        <div class="modal-content rounded-5 p-3" style="background: #FFFFFF; border: 1px solid #E5E7EB; color: #374151;">
             <div class="modal-header border-0 pb-0">
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="row g-4" id="modal-item-content">

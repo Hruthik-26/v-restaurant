@@ -15,15 +15,16 @@
     <style>
         .kitchen-col {
             min-height: 60vh;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px dashed rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            background: #FFFFFF;
+            border: 1.5px dashed #E5E7EB;
             padding: 15px;
-            transition: background 0.3s ease;
+            transition: background 0.3s ease, border-color 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
         }
         .kitchen-col.drag-over {
-            background: rgba(255, 107, 53, 0.05);
-            border-color: #FF6B35;
+            background: rgba(198, 161, 91, 0.06);
+            border-color: #C6A15B;
         }
         .order-kitchen-card {
             cursor: grab;
@@ -34,21 +35,20 @@
         }
     </style>
 </head>
-<body class="bg-slate-950 text-light overflow-x-hidden">
+<body style="background-color:#F8FAFC; font-family:'Poppins',sans-serif;">
 
-    <!-- Top Navigation Bar -->
-    <nav class="navbar navbar-dark bg-slate-900 border-bottom border-white-10 py-3 sticky-top">
+    <nav class="navbar sticky-top py-3" style="background:#fff; border-bottom:1px solid #E5E7EB; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
         <div class="container-fluid px-4">
             <a class="navbar-brand d-flex align-items-center" href="{% url 'core:home' %}">
-                <i class="bi bi-chevron-left me-2 text-primary fs-5"></i>
-                <span class="fs-4 fw-bold text-uppercase tracking-widest text-gradient">V Restaurant</span>
-                <span class="badge bg-danger ms-2" style="font-size: 0.65rem;">KITCHEN LIVE</span>
+                <i class="bi bi-chevron-left me-2 fs-5" style="color:#C6A15B;"></i>
+                <span class="fs-4 fw-bold text-uppercase" style="font-family:'Playfair Display',serif;color:#1F2937;letter-spacing:2px;">L'Étoile Bistro</span>
+                <span class="badge ms-2 text-white" style="background:#1F2937;font-size:0.65rem;">KITCHEN LIVE</span>
             </a>
             <div class="d-flex align-items-center gap-3">
-                <span class="badge bg-success-dim text-success px-3 py-2 rounded-pill border border-success-dim d-flex align-items-center gap-2">
-                    <span class="animate-ping" style="width: 8px; height: 8px; border-radius: 50%; background: #2ECC71; display: inline-block;"></span> Active Connection
+                <span class="badge px-3 py-2 rounded-pill border d-flex align-items-center gap-2" style="background:rgba(16,185,129,0.12);color:#10B981;border-color:rgba(16,185,129,0.3) !important;">
+                    <span class="animate-ping" style="width:8px;height:8px;border-radius:50%;background:#10B981;display:inline-block;"></span> Active Connection
                 </span>
-                <button class="btn btn-outline-secondary btn-sm" onclick="location.reload()"><i class="bi bi-arrow-clockwise"></i> Force Refresh</button>
+                <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="location.reload()"><i class="bi bi-arrow-clockwise"></i> Force Refresh</button>
             </div>
         </div>
     </nav>
@@ -58,39 +58,39 @@
         <!-- Top Analytics Counter Widgets -->
         <div class="row g-3 mb-4">
             <div class="col-md-3">
-                <div class="glass-card p-3 rounded-4 border border-white-10 d-flex justify-content-between align-items-center">
+                <div class="p-3 rounded-4 d-flex justify-content-between align-items-center" style="background:#fff;border:1px solid #E5E7EB;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
                     <div>
-                        <span class="text-secondary small d-block">Today's Revenue</span>
-                        <h3 class="text-primary mb-0 fw-bold" id="stats-revenue">${{ today_revenue }}</h3>
+                        <span class="text-muted small d-block">Today's Revenue</span>
+                        <h3 class="mb-0 fw-bold" style="color:#C6A15B;" id="stats-revenue">₹{{ today_revenue }}</h3>
                     </div>
-                    <i class="bi bi-currency-dollar fs-2 text-primary-dim"></i>
+                    <i class="bi bi-currency-rupee fs-2" style="color:rgba(198,161,91,0.3);"></i>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="glass-card p-3 rounded-4 border border-white-10 d-flex justify-content-between align-items-center">
+                <div class="p-3 rounded-4 d-flex justify-content-between align-items-center" style="background:#fff;border:1px solid #E5E7EB;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
                     <div>
-                        <span class="text-secondary small d-block">Today's Orders</span>
-                        <h3 class="text-white mb-0 fw-bold" id="stats-orders">{{ today_orders }}</h3>
+                        <span class="text-muted small d-block">Today's Orders</span>
+                        <h3 class="mb-0 fw-bold text-dark" id="stats-orders">{{ today_orders }}</h3>
                     </div>
-                    <i class="bi bi-receipt-cutoff fs-2 text-secondary-dim"></i>
+                    <i class="bi bi-receipt-cutoff fs-2 text-secondary"></i>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="glass-card p-3 rounded-4 border border-white-10 d-flex justify-content-between align-items-center">
+                <div class="p-3 rounded-4 d-flex justify-content-between align-items-center" style="background:#fff;border:1px solid #E5E7EB;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
                     <div>
-                        <span class="text-secondary small d-block">Pending in Queue</span>
-                        <h3 class="text-warning mb-0 fw-bold" id="stats-pending">{{ pending_orders }}</h3>
+                        <span class="text-muted small d-block">Pending in Queue</span>
+                        <h3 class="mb-0 fw-bold" style="color:#F59E0B;" id="stats-pending">{{ pending_orders }}</h3>
                     </div>
-                    <i class="bi bi-clock-history fs-2 text-warning-dim"></i>
+                    <i class="bi bi-clock-history fs-2" style="color:rgba(245,158,11,0.3);"></i>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="glass-card p-3 rounded-4 border border-white-10 d-flex justify-content-between align-items-center">
+                <div class="p-3 rounded-4 d-flex justify-content-between align-items-center" style="background:#fff;border:1px solid #E5E7EB;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
                     <div>
-                        <span class="text-secondary small d-block">Completed Today</span>
-                        <h3 class="text-success mb-0 fw-bold" id="stats-completed">{{ completed_orders }}</h3>
+                        <span class="text-muted small d-block">Completed Today</span>
+                        <h3 class="mb-0 fw-bold" style="color:#10B981;" id="stats-completed">{{ completed_orders }}</h3>
                     </div>
-                    <i class="bi bi-check2-circle fs-2 text-success-dim"></i>
+                    <i class="bi bi-check2-circle fs-2" style="color:rgba(16,185,129,0.3);"></i>
                 </div>
             </div>
         </div>
@@ -101,14 +101,14 @@
             <!-- Column 1: Received / Queued -->
             <div class="col-lg-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="text-white mb-0"><i class="bi bi-inbox text-primary me-2"></i>New Orders</h5>
-                    <span class="badge bg-slate-900 border border-white-10" id="count-received">{{ orders_received.count }}</span>
+                    <h5 class="mb-0 fw-bold" style="color:#1F2937;"><i class="bi bi-inbox me-2" style="color:#6B7280;"></i>New Orders</h5>
+                    <span class="badge rounded-pill" style="background:#F1F5F9;color:#374151;border:1px solid #E5E7EB;" id="count-received">{{ orders_received.count }}</span>
                 </div>
                 <div class="kitchen-col" id="col-RECEIVED" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="handleDrop(event, 'RECEIVED')">
                     {% for o in orders_received %}
                         {% include 'kitchen/components/order_card.html' with order=o %}
                     {% empty %}
-                        <div class="text-center py-5 text-secondary empty-msg">No new orders queued.</div>
+                        <div class="text-center py-5 text-muted empty-msg">No new orders queued.</div>
                     {% endfor %}
                 </div>
             </div>
@@ -116,14 +116,14 @@
             <!-- Column 2: In Preparation -->
             <div class="col-lg-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="text-white mb-0"><i class="bi bi-egg-fried text-warning me-2"></i>In Cooking</h5>
-                    <span class="badge bg-slate-900 border border-white-10" id="count-preparing">{{ orders_preparing.count }}</span>
+                    <h5 class="mb-0 fw-bold" style="color:#1F2937;"><i class="bi bi-egg-fried me-2" style="color:#F59E0B;"></i>In Cooking</h5>
+                    <span class="badge rounded-pill" style="background:#FEF3C7;color:#92600A;border:1px solid rgba(245,158,11,0.3);" id="count-preparing">{{ orders_preparing.count }}</span>
                 </div>
                 <div class="kitchen-col" id="col-PREPARING" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="handleDrop(event, 'PREPARING')">
                     {% for o in orders_preparing %}
                         {% include 'kitchen/components/order_card.html' with order=o %}
                     {% empty %}
-                        <div class="text-center py-5 text-secondary empty-msg">No active preparations.</div>
+                        <div class="text-center py-5 text-muted empty-msg">No active preparations.</div>
                     {% endfor %}
                 </div>
             </div>
@@ -131,14 +131,14 @@
             <!-- Column 3: Packing & Ready -->
             <div class="col-lg-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="text-white mb-0"><i class="bi bi-box2-heart text-success me-2"></i>Ready / Packing</h5>
-                    <span class="badge bg-slate-900 border border-white-10" id="count-ready">{{ orders_packing_ready.count }}</span>
+                    <h5 class="mb-0 fw-bold" style="color:#1F2937;"><i class="bi bi-box2-heart me-2" style="color:#10B981;"></i>Ready / Packing</h5>
+                    <span class="badge rounded-pill" style="background:#D1FAE5;color:#065F46;border:1px solid rgba(16,185,129,0.3);" id="count-ready">{{ orders_packing_ready.count }}</span>
                 </div>
                 <div class="kitchen-col" id="col-READY" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="handleDrop(event, 'READY')">
                     {% for o in orders_packing_ready %}
                         {% include 'kitchen/components/order_card.html' with order=o %}
                     {% empty %}
-                        <div class="text-center py-5 text-secondary empty-msg">No items ready for pickup.</div>
+                        <div class="text-center py-5 text-muted empty-msg">No items ready for pickup.</div>
                     {% endfor %}
                 </div>
             </div>

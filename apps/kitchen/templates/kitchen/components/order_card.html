@@ -1,33 +1,41 @@
-<div class="card bg-slate-900 border border-white-10 rounded-4 p-3 mb-3 order-kitchen-card glass-card" 
+<div class="card mb-3 order-kitchen-card" 
      id="order-card-{{ order.id }}" 
      draggable="true" 
      ondragstart="handleDragStart(event, '{{ order.id }}')"
-     data-order-id="{{ order.id }}">
+     data-order-id="{{ order.id }}"
+     style="background:#fff; border:1px solid #E5E7EB; border-radius:14px; padding:16px; box-shadow:0 2px 8px rgba(0,0,0,0.07);">
     
-    <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom border-white-10">
-        <span class="fw-bold text-white small">{{ order.order_number }}</span>
+    <div class="d-flex justify-content-between align-items-center mb-2 pb-2" style="border-bottom:1px solid #F1F5F9;">
+        <span class="fw-bold small" style="color:#1F2937;">{{ order.order_number }}</span>
         <!-- Dynamic Elapsed Cooking Timer -->
-        <span class="badge bg-slate-950 border border-white-10 text-primary elapsed-timer-badge" 
-              data-created-time="{{ order.created_at|date:'Y-m-d\TH:i:s' }}">
+        <span class="badge rounded-pill elapsed-timer-badge" 
+              data-created-time="{{ order.created_at|date:'Y-m-d\TH:i:s' }}"
+              style="background:#F1F5F9; color:#C6A15B; border:1px solid rgba(198,161,91,0.3); font-size:0.72rem;">
             0m ago
         </span>
     </div>
     
     <!-- Customer Details -->
     <div class="mb-3">
-        <h6 class="text-white mb-0">{{ order.customer_name }}</h6>
-        <span class="badge {% if order.dining_option == 'DINE_IN' %}bg-primary-dim text-primary{% elif order.dining_option == 'DELIVERY' %}bg-warning-dim text-warning{% else %}bg-info-dim text-info{% endif %} px-2 py-1 mt-1 small" style="font-size: 0.7rem;">
+        <h6 class="mb-1 fw-semibold" style="color:#1F2937;">{{ order.customer_name }}</h6>
+        <span class="badge {% if order.dining_option == 'DINE_IN' %}
+            px-2 py-1 mt-1 small" style="background:rgba(59,130,246,0.1);color:#3B82F6;border:1px solid rgba(59,130,246,0.25);font-size:0.72rem;
+        {% elif order.dining_option == 'DELIVERY' %}
+            px-2 py-1 mt-1 small" style="background:rgba(245,158,11,0.1);color:#F59E0B;border:1px solid rgba(245,158,11,0.25);font-size:0.72rem;
+        {% else %}
+            px-2 py-1 mt-1 small" style="background:rgba(16,185,129,0.1);color:#10B981;border:1px solid rgba(16,185,129,0.25);font-size:0.72rem;
+        {% endif %}">
             {{ order.get_dining_option_display }} {% if order.dining_option == 'DINE_IN' %}(Table #{{ order.table_number }}){% endif %}
         </span>
     </div>
     
     <!-- Ordered Dishes list -->
-    <div class="mb-3 bg-slate-950-50 p-2 rounded border border-white-5">
+    <div class="mb-3 p-2 rounded-3" style="background:#F8FAFC; border:1px solid #E5E7EB;">
         <ul class="list-unstyled mb-0 small">
             {% for item in order.items.all %}
-            <li class="text-secondary d-flex justify-content-between">
+            <li class="d-flex justify-content-between py-1" style="color:#6B7280; border-bottom:1px solid #F1F5F9;">
                 <span>{{ item.menu_item.name }}</span>
-                <strong class="text-white">x{{ item.quantity }}</strong>
+                <strong style="color:#1F2937;">x{{ item.quantity }}</strong>
             </li>
             {% endfor %}
         </ul>
@@ -38,23 +46,33 @@
         <!-- Status Action Buttons -->
         <div>
             {% if order.status == 'RECEIVED' %}
-            <button class="btn btn-primary btn-sm px-3 rounded-pill fw-semibold btn-status-action" onclick="updateOrderStatus('{{ order.id }}', 'PREPARING')">
+            <button class="btn btn-sm px-3 rounded-pill fw-semibold btn-status-action" 
+                    onclick="updateOrderStatus('{{ order.id }}', 'PREPARING')"
+                    style="background:linear-gradient(135deg,#C6A15B,#A8833A);color:#fff;border:none;">
                 Prepare <i class="bi bi-play-fill"></i>
             </button>
             {% elif order.status == 'PREPARING' %}
-            <button class="btn btn-warning btn-sm px-3 rounded-pill fw-semibold btn-status-action" onclick="updateOrderStatus('{{ order.id }}', 'COOKING')">
+            <button class="btn btn-sm px-3 rounded-pill fw-semibold btn-status-action" 
+                    onclick="updateOrderStatus('{{ order.id }}', 'COOKING')"
+                    style="background:rgba(245,158,11,0.15);color:#92600A;border:1px solid rgba(245,158,11,0.4);">
                 Cook <i class="bi bi-egg-fried"></i>
             </button>
             {% elif order.status == 'COOKING' %}
-            <button class="btn btn-info btn-sm px-3 rounded-pill fw-semibold btn-status-action" onclick="updateOrderStatus('{{ order.id }}', 'PACKING')">
+            <button class="btn btn-sm px-3 rounded-pill fw-semibold btn-status-action"
+                    onclick="updateOrderStatus('{{ order.id }}', 'PACKING')"
+                    style="background:rgba(59,130,246,0.12);color:#1D4ED8;border:1px solid rgba(59,130,246,0.35);">
                 Pack <i class="bi bi-box2-fill"></i>
             </button>
             {% elif order.status == 'PACKING' %}
-            <button class="btn btn-success btn-sm px-3 rounded-pill fw-semibold btn-status-action" onclick="updateOrderStatus('{{ order.id }}', 'READY')">
+            <button class="btn btn-sm px-3 rounded-pill fw-semibold btn-status-action"
+                    onclick="updateOrderStatus('{{ order.id }}', 'READY')"
+                    style="background:rgba(16,185,129,0.12);color:#065F46;border:1px solid rgba(16,185,129,0.35);">
                 Ready <i class="bi bi-check-lg"></i>
             </button>
             {% elif order.status == 'READY' %}
-            <button class="btn btn-success btn-sm px-3 rounded-pill fw-semibold btn-status-action text-uppercase" onclick="updateOrderStatus('{{ order.id }}', 'DELIVERED')">
+            <button class="btn btn-sm px-3 rounded-pill fw-semibold btn-status-action text-uppercase"
+                    onclick="updateOrderStatus('{{ order.id }}', 'DELIVERED')"
+                    style="background:#10B981;color:#fff;border:none;">
                 Deliver <i class="bi bi-check-circle-fill"></i>
             </button>
             {% endif %}
@@ -62,11 +80,13 @@
         
         <!-- Priority controls -->
         <div class="d-flex gap-1">
-            <button class="btn btn-icon btn-sm glass-btn border-white-10" onclick="adjustPriority('{{ order.id }}', 1)" title="Increase Priority">
-                <i class="bi bi-chevron-up text-danger"></i>
+            <button class="btn btn-sm" onclick="adjustPriority('{{ order.id }}', 1)" title="Increase Priority"
+                    style="background:#FEF2F2;color:#EF4444;border:1px solid rgba(239,68,68,0.25);border-radius:8px;padding:4px 8px;">
+                <i class="bi bi-chevron-up"></i>
             </button>
-            <button class="btn btn-icon btn-sm glass-btn border-white-10" onclick="adjustPriority('{{ order.id }}', -1)" title="Decrease Priority">
-                <i class="bi bi-chevron-down text-secondary"></i>
+            <button class="btn btn-sm" onclick="adjustPriority('{{ order.id }}', -1)" title="Decrease Priority"
+                    style="background:#F1F5F9;color:#6B7280;border:1px solid #E5E7EB;border-radius:8px;padding:4px 8px;">
+                <i class="bi bi-chevron-down"></i>
             </button>
         </div>
     </div>

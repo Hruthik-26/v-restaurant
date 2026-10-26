@@ -19,13 +19,12 @@
             align-items: center;
             justify-content: center;
             font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 50%, #F8FAFC 100%);
         }
         .login-card {
-            background: rgba(15, 15, 20, 0.65);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.07);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.10);
             border-radius: 24px;
             max-width: 450px;
             width: 100%;
@@ -37,38 +36,35 @@
         .login-card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, #FF6F61, #E53935);
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: linear-gradient(90deg, #C6A15B, #D4B87A, #C6A15B);
         }
         .brand-logo {
             font-family: 'Playfair Display', serif;
             font-size: 1.8rem;
             font-weight: 700;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
-            background: linear-gradient(135deg, #fff 30%, #FF6F61 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #1F2937;
             margin-bottom: 0.5rem;
         }
+        .brand-logo span { color: #C6A15B; }
         .form-control {
-            background-color: rgba(255, 255, 255, 0.03) !important;
-            border: 1px solid rgba(255, 255, 255, 0.08) !important;
-            color: #fff !important;
+            background-color: #F8FAFC !important;
+            border: 1px solid #E5E7EB !important;
+            color: #1F2937 !important;
             border-radius: 12px;
             padding: 0.75rem 1rem;
             transition: all 0.3s ease;
         }
         .form-control:focus {
-            background-color: rgba(255, 255, 255, 0.06) !important;
-            border-color: #FF6F61 !important;
-            box-shadow: 0 0 0 4px rgba(255, 111, 97, 0.15) !important;
+            background-color: #FFFFFF !important;
+            border-color: #C6A15B !important;
+            box-shadow: 0 0 0 3px rgba(198, 161, 91, 0.15) !important;
         }
+        .form-label { color: #6B7280; font-size: 0.875rem; font-weight: 500; }
         .btn-login {
-            background: linear-gradient(135deg, #FF6F61 0%, #E53935 100%);
+            background: linear-gradient(135deg, #C6A15B 0%, #A8833A 100%);
             border: none;
             color: white;
             padding: 0.8rem;
@@ -79,19 +75,18 @@
         }
         .btn-login:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(229, 57, 53, 0.4);
-            filter: brightness(1.1);
+            box-shadow: 0 8px 24px rgba(198, 161, 91, 0.4);
+            filter: brightness(1.05);
+            color: white;
         }
-        .btn-login:active {
-            transform: translateY(0);
-        }
+        .btn-login:active { transform: translateY(0); }
     </style>
 </head>
-<body>
+<body style="background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 50%, #F8FAFC 100%);">
 
     <div class="login-card">
-        <div class="brand-logo">V Restaurant</div>
-        <p class="text-secondary small mb-4">ADMINISTRATOR PORTAL</p>
+        <div class="brand-logo">L'<span>É</span>toile Bistro</div>
+        <p class="mb-4" style="color:#6B7280; font-size:0.8rem; letter-spacing:2px; text-transform:uppercase;">Administrator Portal</p>
 
         {% if form.errors or form.non_field_errors %}
         <div class="alert alert-danger-dim border border-danger text-danger text-start small rounded-3 p-3 mb-4 animate-pulse">
@@ -118,7 +113,7 @@
                 SIGN IN <i class="bi bi-box-arrow-in-right ms-1"></i>
             </button>
             
-            <a href="{% url 'core:home' %}" class="text-secondary-dim text-decoration-none small hover-text-primary">
+            <a href="{% url 'core:home' %}" class="text-decoration-none small" style="color:#9CA3AF;">
                 <i class="bi bi-arrow-left me-1"></i> Back to Main Site
             </a>
         </form>

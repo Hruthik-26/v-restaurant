@@ -1,9 +1,9 @@
 {% load static %}
-<nav class="navbar navbar-expand-lg navbar-dark fixed-top glass-nav py-3" id="main-nav">
+<nav class="navbar navbar-expand-lg fixed-top glass-nav py-3" id="main-nav">
     <div class="container">
         <!-- Logo -->
         <a class="navbar-brand d-flex flex-column align-items-start" href="{% url 'core:home' %}">
-            <span class="fs-4 fw-bold tracking-widest text-uppercase" style="color: #FFFFFF; font-family: 'Playfair Display', serif; letter-spacing: 2px;">V RESTAURANT</span>
+            <span class="fs-4 fw-bold tracking-widest text-uppercase" style="color: #1F2937; font-family: 'Playfair Display', serif; letter-spacing: 2px;">VRESTAURANT</span>
             <span class="text-pink-premium" style="font-size: 0.6rem; letter-spacing: 3px; text-transform: uppercase;">Fine Dining Experience</span>
         </a>
 
@@ -74,12 +74,12 @@
 </nav>
 
 <!-- Offcanvas Cart Drawer -->
-<div class="offcanvas offcanvas-end bg-slate-900 border-start border-white-10 text-light glass-panel" tabindex="-1" id="cartDrawer" aria-labelledby="cartDrawerLabel" style="width: 400px; backdrop-filter: blur(20px);">
-    <div class="offcanvas-header border-bottom border-white-10 py-4">
-        <h5 class="offcanvas-title d-flex align-items-center" id="cartDrawerLabel">
-            <i class="bi bi-cart3 text-primary me-2 fs-4"></i> Your Gourmet Bag
+<div class="offcanvas offcanvas-end border-start text-dark" tabindex="-1" id="cartDrawer" aria-labelledby="cartDrawerLabel" style="width: 400px; background: #fff;">
+    <div class="offcanvas-header border-bottom py-4" style="border-color:#E5E7EB !important;">
+        <h5 class="offcanvas-title d-flex align-items-center text-dark" id="cartDrawerLabel">
+            <i class="bi bi-cart3 me-2 fs-4" style="color:#C6A15B;"></i> Your Gourmet Bag
         </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     
     <div class="offcanvas-body d-flex flex-column justify-content-between p-4">
@@ -97,25 +97,25 @@
             </div>
             
             <div class="d-flex justify-content-between mb-2">
-                <span class="text-secondary">Subtotal</span>
-                <span class="fw-semibold text-white" id="summary-subtotal">₹0.00</span>
+                <span class="text-muted">Subtotal</span>
+                <span class="fw-semibold text-dark" id="summary-subtotal">₹0.00</span>
             </div>
             <div class="d-flex justify-content-between mb-2">
-                <span class="text-secondary">GST ({{ settings.gst_percentage }}%)</span>
-                <span class="fw-semibold text-white" id="summary-tax">₹0.00</span>
+                <span class="text-muted">GST ({{ settings.gst_percentage }}%)</span>
+                <span class="fw-semibold text-dark" id="summary-tax">₹0.00</span>
             </div>
             <div class="d-flex justify-content-between mb-2 d-none" id="summary-delivery-row">
-                <span class="text-secondary">Delivery Charge</span>
-                <span class="fw-semibold text-white" id="summary-delivery">₹0.00</span>
+                <span class="text-muted">Delivery Charge</span>
+                <span class="fw-semibold text-dark" id="summary-delivery">₹0.00</span>
             </div>
             <div class="d-flex justify-content-between mb-2 d-none text-success" id="summary-discount-row">
-                <span class="text-success-dim">Discount</span>
+                <span class="text-muted">Discount</span>
                 <span class="fw-semibold" id="summary-discount">-₹0.00</span>
             </div>
-            <hr class="border-white-10 my-3">
+            <hr class="my-3" style="border-color:#E5E7EB;">
             <div class="d-flex justify-content-between mb-4">
-                <span class="fs-5 fw-bold text-white">Grand Total</span>
-                <span class="fs-5 fw-bold text-primary" id="summary-total">₹0.00</span>
+                <span class="fs-5 fw-bold text-dark">Grand Total</span>
+                <span class="fs-5 fw-bold" id="summary-total" style="color:#C6A15B;">₹0.00</span>
             </div>
             
             <div class="d-grid gap-2">
